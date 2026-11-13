@@ -262,7 +262,7 @@ export default function MusicPlayer() {
 
   /* Клик по свободному месту панели (не по кнопкам) — раскрыть/свернуть */
   const onBarClick = (e) => {
-    if (e.target.closest('button, a, input')) return;
+    if (e.target.closest('button, a, input, .player-panel, .player-progress, .player-volume-panel')) return;
     setExpanded((v) => !v);
   };
 
@@ -270,6 +270,24 @@ export default function MusicPlayer() {
   const [isTouch] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
   );
+
+  /* ── Держим плеер в пределах экрана при ресайзе ─────────── */
+  useEffect(() => {
+    const clamp = () => {
+      const el = rootRef.current;
+      if (!el || !posRef.current) return;
+      const rect = el.getBoundingClientRect();
+      const x = Math.min(Math.max(0, posRef.current.x), Math.max(0, window.innerWidth - rect.width));
+      const y = Math.min(Math.max(0, posRef.current.y), Math.max(0, window.innerHeight - rect.height));
+      if (x !== posRef.current.x || y !== posRef.current.y) {
+        posRef.current = { x, y };
+        setPos({ x, y });
+        localStorage.setItem(POS_KEY, JSON.stringify({ x, y }));
+      }
+    };
+    window.addEventListener('resize', clamp);
+    return () => window.removeEventListener('resize', clamp);
+  }, []);
 
   /* ── Прочее ──────────────────────────────────────────────── */
   const switchMode = (nextMode) => {
@@ -382,7 +400,9 @@ export default function MusicPlayer() {
           <div className="player-sep" aria-hidden="true" />
 
           <button
-            className="player-btn player-btn--ghost player-volume-trigger"
+            className={`player-btn player-btn--ghost player-volume-trigger ${
+              volumeOpen ? 'is-visible' : ''
+            }`}
             onClick={() => (isTouch ? setVolumeOpen((v) => !v) : setVolumeOpen(true))}
             onMouseEnter={() => !isTouch && setVolumeOpen(true)}
             aria-label="Громкость"

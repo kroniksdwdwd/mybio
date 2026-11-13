@@ -1,12 +1,20 @@
 import { site } from '../config/site';
+import steamData from '../data/steamProfile.json';
 
 /**
  * ============================================================
  *  Steam — получение реальных данных профиля
  * ============================================================
- *  Steam не отдаёт CORS-заголовки, поэтому запрос идёт через
- *  публичные CORS-прокси. Если ни один не ответил — используются
- *  значения из src/config/site.js (fallback), ошибок в консоли нет.
+ *
+ *  Источники данных (по приоритету):
+ *  1. src/data/steamProfile.json — обновляется автоматически через
+ *     GitHub Actions (scripts/fetch-steam.mjs). Работает всегда.
+ *  2. Live-запрос через CORS-прокси — если прокси доступен, статус
+ *     и аватар обновляются в браузере (может не сработать — Steam
+ *     блокирует дата-центры, поэтому есть кэш и fallback).
+ *
+ *  Ошибок в консоли не возникает: при недоступности используются
+ *  данные из JSON / конфига.
  * ============================================================
  */
 
@@ -35,7 +43,7 @@ export function parseSteamId(input) {
   // Голый SteamID64
   if (/^\d{17}$/.test(value)) return { id64: value, vanity: null };
 
-  // Голый SteamID (STEAM_0:1:12345678) — конвертируем в SteamID64
+  // Голый SteamID (STEAM_0:1:12345678) → SteamID64
   const legacy = value.match(/^STEAM_(\d+):(\d+):(\d+)$/i);
   if (legacy) {
     const [, universe, account, instance] = legacy.map(Number);
@@ -46,38 +54,6 @@ export function parseSteamId(input) {
 
   return null;
 }
-
-function buildSteamUrls({ id64, vanity }) {
-  const profilePath = id64 ? `/profiles/${id64}` : `/id/${vanity}`;
-  const target = `https://steamcommunity.com${profilePath}/?xml=1`;
-  return { target, profilePath };
-}
-
-/** Прокси: [шаблон, разбор ответа] */
-const PROXIES = [
-  {
-    name: 'cors.lol',
-    build: (u) => `https://api.cors.lol/?url=${encodeURIComponent(u)}`,
-    transform: (text) => text,
-  },
-  {
-    name: 'allorigins',
-    build: (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    transform: (text) => text,
-  },
-  {
-    name: 'whateverorigin',
-    build: (u) => `https://www.whateverorigin.org/get?url=${encodeURIComponent(u)}`,
-    transform: (text) => {
-      try {
-        const json = JSON.parse(text);
-        return json.contents || json.response || '';
-      } catch {
-        return text;
-      }
-    },
-  },
-];
 
 /** Разбор XML-ответа Steam в объект. */
 export function parseSteamXml(xml) {
@@ -113,29 +89,61 @@ export function parseSteamXml(xml) {
   };
 }
 
-/** Статический профиль из конфига (используется до загрузки и при ошибке). */
+/**
+ * Базовый профиль: JSON-данные (обновляются CI) + ручные fallback-значения
+ * из src/config/site.js. Никаких сетевых запросов.
+ */
 export function staticSteamProfile() {
-  const { id, fallbackName, fallbackAvatar, fallbackRealname, fallbackLocation, fallbackSince } =
-    site.steam;
-  const parsed = parseSteamId(id);
+  const cfg = site.steam;
+  const parsed = parseSteamId(cfg.id);
+  const id64 = parsed?.id64 || steamData.id64 || '';
+  const vanity = parsed?.vanity || steamData.vanity || '';
+
   return {
-    id64: parsed?.id64 || '',
-    vanity: parsed?.vanity || '',
-    onlineState: site.steam.onlineState || 'offline',
-    stateMessage: site.steam.onlineState === 'online' ? 'Online' : 'Offline',
-    avatarIcon: fallbackAvatar || '',
-    avatarMedium: fallbackAvatar || '',
-    avatarFull: fallbackAvatar || '',
-    memberSince: fallbackSince || '',
-    realname: fallbackRealname || '',
-    headline: '',
-    location: fallbackLocation || '',
-    groupName: '',
-    games: site.steam.games || [],
-    name: fallbackName || '',
-    static: true,
+    id64,
+    vanity,
+    name: steamData.name || cfg.fallbackName || vanity || id64,
+    realname: steamData.realname || cfg.fallbackRealname || '',
+    location: steamData.location || cfg.fallbackLocation || '',
+    memberSince: steamData.memberSince || cfg.fallbackSince || '',
+    onlineState: cfg.onlineState || steamData.onlineState || 'offline',
+    stateMessage: steamData.stateMessage || 'Offline',
+    avatarIcon: steamData.avatarIcon || cfg.fallbackAvatar || '',
+    avatarMedium: steamData.avatarMedium || cfg.fallbackAvatar || '',
+    avatarFull: steamData.avatarFull || cfg.fallbackAvatar || '',
+    groupName: steamData.groupName || '',
+    games: steamData.games?.length ? steamData.games : cfg.games || [],
+    profileUrl: `https://steamcommunity.com/profiles/${id64}`,
+    updatedAt: steamData.updatedAt || null,
   };
 }
+
+/* ── Live-обновление через публичные CORS-прокси (best effort) ── */
+
+const PROXIES = [
+  {
+    name: 'cors.lol',
+    build: (u) => `https://api.cors.lol/?url=${encodeURIComponent(u)}`,
+    transform: (text) => text,
+  },
+  {
+    name: 'allorigins',
+    build: (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    transform: (text) => text,
+  },
+  {
+    name: 'whateverorigin',
+    build: (u) => `https://whateverorigin.org/get?url=${encodeURIComponent(u)}`,
+    transform: (text) => {
+      try {
+        const json = JSON.parse(text);
+        return json.contents || json.response || '';
+      } catch {
+        return text;
+      }
+    },
+  },
+];
 
 function readCache() {
   try {
@@ -153,12 +161,12 @@ function writeCache(data) {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
   } catch {
-    /* приватный режим — просто игнорируем */
+    /* приватный режим — игнорируем */
   }
 }
 
 /**
- * Загружает реальные данные Steam-профиля.
+ * Пытается обновить данные Steam в браузере.
  * Никогда не бросает ошибку — при неудаче возвращает null.
  */
 export async function loadSteamProfile() {
@@ -166,27 +174,29 @@ export async function loadSteamProfile() {
   if (cached) return cached;
 
   const parsed = parseSteamId(site.steam.id);
-  if (!parsed) return null;
+  const id64 = parsed?.id64 || steamData.id64;
+  const vanity = parsed?.vanity;
+  if (!id64 && !vanity) return null;
 
-  const { target, profilePath } = buildSteamUrls(parsed);
+  const target = `https://steamcommunity.com/${id64 ? `profiles/${id64}` : `id/${vanity}`}/?xml=1`;
 
   for (const proxy of PROXIES) {
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 8000);
+      const timer = setTimeout(() => controller.abort(), 6000);
       const res = await fetch(proxy.build(target), { signal: controller.signal });
       clearTimeout(timer);
       if (!res.ok) continue;
 
       const text = await res.text();
       const xml = proxy.transform(text);
-      if (!xml || xml.length < 40) continue;
+      if (!xml || xml.length < 60 || !xml.includes('steamID64')) continue;
 
       const data = parseSteamXml(xml);
-      if (!data) continue;
+      if (!data || !data.id64) continue;
 
-      data.profilePath = profilePath;
-      data.profileUrl = `https://steamcommunity.com${profilePath}`;
+      data.name = data.vanity || data.id64;
+      data.profileUrl = `https://steamcommunity.com/profiles/${data.id64}`;
       writeCache(data);
       return data;
     } catch {

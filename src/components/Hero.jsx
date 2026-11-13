@@ -52,7 +52,7 @@ export default function Hero({ steam }) {
       <div className="hero-vignette" aria-hidden="true" />
 
       <div className="hero-inner container">
-        <div className="hero-top reveal" style={{ '--delay': '0ms' }}>
+        <div className={`hero-top reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '0ms' }}>
           <span className="hero-status">
             <span className="hero-status-dot" aria-hidden="true" />
             {steam?.onlineState === 'online' ? 'online' : 'offline'}
@@ -60,7 +60,7 @@ export default function Hero({ steam }) {
           <span className="hero-id">{steam?.id64 || '76561198…'}</span>
         </div>
 
-        <div className="hero-avatar reveal" style={{ '--delay': '90ms' }}>
+        <div className={`hero-avatar reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '90ms' }}>
           <div className="avatar-frame">
             <div className="avatar-corner avatar-corner--tl" aria-hidden="true" />
             <div className="avatar-corner avatar-corner--tr" aria-hidden="true" />
@@ -71,22 +71,22 @@ export default function Hero({ steam }) {
           <span className="avatar-glow" aria-hidden="true" />
         </div>
 
-        <h1 className="hero-name reveal" style={{ '--delay': '180ms' }}>
+        <h1 className={`hero-name reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '180ms' }}>
           {site.name}
           <span className="hero-name-cursor" aria-hidden="true" />
         </h1>
 
-        <p className="hero-tagline reveal" style={{ '--delay': '260ms' }}>
+        <p className={`hero-tagline reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '260ms' }}>
           <span className="hero-tagline-mark">&lt;</span>
           {site.tagline}
           <span className="hero-tagline-mark">/&gt;</span>
         </p>
 
-        <p className="hero-desc reveal" style={{ '--delay': '330ms' }}>
+        <p className={`hero-desc reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '330ms' }}>
           {site.description}
         </p>
 
-        <div className="hero-chips reveal" style={{ '--delay': '400ms' }}>
+        <div className={`hero-chips reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '400ms' }}>
           {site.chips
             .filter((c) => c && c.value)
             .map((c) => (
@@ -98,7 +98,7 @@ export default function Hero({ steam }) {
             ))}
         </div>
 
-        <div className="hero-links reveal" style={{ '--delay': '470ms' }}>
+        <div className={`hero-links reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '470ms' }}>
           {site.extraLinks
             .filter((l) => l && l.enabled !== false)
             .map((l) => (

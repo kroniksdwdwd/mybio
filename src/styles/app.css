@@ -940,8 +940,8 @@ code {
   transition: opacity 0.3s var(--ease), transform 0.3s var(--ease), color 0.22s var(--ease);
 }
 .player:hover .player-volume-trigger,
-.player-volume-trigger:focus-visible,
-.player-volume-panel.is-open ~ * .player-volume-trigger {
+.player-volume-trigger.is-visible,
+.player-volume-trigger:focus-visible {
   opacity: 1;
   transform: none;
 }
