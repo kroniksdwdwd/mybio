@@ -192,8 +192,8 @@ iframe {
 /* ── Анимации появления при скролле ────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
+  transform: translateY(38px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
   transition-delay: var(--delay, 0ms);
   will-change: opacity, transform;
 }

@@ -26,7 +26,7 @@ export function useReveal(selector = '.reveal', deps = []) {
           }
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px -8% 0px' }
     );
 
     elements.forEach((el) => io.observe(el));

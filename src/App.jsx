@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { site } from './config/site';
 import { loadSteamProfile, staticSteamProfile } from './lib/steam';
-import Nav from './components/Nav';
+import Nav, { SectionIndicator } from './components/Nav';
 import Hero from './components/Hero';
 import SteamSection from './components/SteamSection';
 import SocialsSection from './components/SocialsSection';
@@ -28,6 +28,7 @@ export default function App() {
     <div className="app">
       <Cursor />
       <Nav sections={site.sections} />
+      <SectionIndicator />
       <main className="app-main">
         <Hero steam={steam} steamLive={steamLive} />
         {site.steam.enabled && <SteamSection steam={steam} steamLive={steamLive} />}
