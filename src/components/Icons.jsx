@@ -16,7 +16,6 @@ import {
   siLinktree,
   siKofi,
   siBoosty,
-  siDonatebox,
 } from 'simple-icons';
 
 /* ── Брендовые иконки (simple-icons) ─────────────────────── */
@@ -40,7 +39,6 @@ const BRAND = {
   linktree: siLinktree,
   kofi: siKofi,
   boosty: siBoosty,
-  donation: siDonatebox,
 };
 
 /* ── Собственные иконки ──────────────────────────────────── */
