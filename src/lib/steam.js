@@ -70,15 +70,19 @@ export function parseSteamXml(xml) {
     n.textContent.trim()
   );
 
+  // akamai-хост Steam бывает недоступен — всегда используем fastly
+  const fixAvatar = (url) =>
+    url.replace('avatars.akamai.steamstatic.com', 'avatars.fastly.steamstatic.com');
+
   return {
     id64: read('steamID64'),
     vanity: read('customURL') || read('steamID'),
     onlineState: read('onlineState'),
     stateMessage: read('stateMessage'),
     privacyState: read('privacyState'),
-    avatarIcon: read('avatarIcon'),
-    avatarMedium: read('avatarMedium'),
-    avatarFull: read('avatarFull'),
+    avatarIcon: fixAvatar(read('avatarIcon')),
+    avatarMedium: fixAvatar(read('avatarMedium')),
+    avatarFull: fixAvatar(read('avatarFull')),
     memberSince: read('memberSince'),
     realname: read('realname'),
     headline: read('headline'),
@@ -106,11 +110,20 @@ export function staticSteamProfile() {
     realname: steamData.realname || cfg.fallbackRealname || '',
     location: steamData.location || cfg.fallbackLocation || '',
     memberSince: steamData.memberSince || cfg.fallbackSince || '',
-    onlineState: cfg.onlineState || steamData.onlineState || 'offline',
+    onlineState: steamData.onlineState || cfg.onlineState || 'offline',
     stateMessage: steamData.stateMessage || 'Offline',
-    avatarIcon: steamData.avatarIcon || cfg.fallbackAvatar || '',
-    avatarMedium: steamData.avatarMedium || cfg.fallbackAvatar || '',
-    avatarFull: steamData.avatarFull || cfg.fallbackAvatar || '',
+    avatarIcon: steamData.avatarIcon?.replace(
+      'avatars.akamai.steamstatic.com',
+      'avatars.fastly.steamstatic.com'
+    ) || cfg.fallbackAvatar || '',
+    avatarMedium: steamData.avatarMedium?.replace(
+      'avatars.akamai.steamstatic.com',
+      'avatars.fastly.steamstatic.com'
+    ) || cfg.fallbackAvatar || '',
+    avatarFull: steamData.avatarFull?.replace(
+      'avatars.akamai.steamstatic.com',
+      'avatars.fastly.steamstatic.com'
+    ) || cfg.fallbackAvatar || '',
     groupName: steamData.groupName || '',
     games: steamData.games?.length ? steamData.games : cfg.games || [],
     profileUrl: `https://steamcommunity.com/profiles/${id64}`,

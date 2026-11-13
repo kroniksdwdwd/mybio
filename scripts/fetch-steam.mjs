@@ -31,12 +31,14 @@ const read = (tag) => {
   const m = xml.match(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?</${tag}>`));
   return m ? m[1].trim() : '';
 };
+// akamai-хост Steam периодически недоступен — всегда используем fastly
+const normalize = (url) => url.replace('avatars.akamai.steamstatic.com', 'avatars.fastly.steamstatic.com');
 const readAll = (tag) =>
   [...xml.matchAll(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?</${tag}>`, 'g'))].map((m) =>
     m[1].trim()
   );
 
-const avatarFull = read('avatarFull');
+const avatarFull = normalize(read('avatarFull'));
 const hash = (avatarFull.match(/([a-f0-9]{40})(?:_full)?\.jpg/) || [])[1] || '';
 
 const profile = {
@@ -48,9 +50,9 @@ const profile = {
   memberSince: read('memberSince'),
   onlineState: read('onlineState') || 'offline',
   stateMessage: read('stateMessage') || 'Offline',
-  avatarIcon: read('avatarIcon'),
-  avatarMedium: read('avatarMedium'),
-  avatarFull,
+  avatarIcon: normalize(read('avatarIcon')),
+  avatarMedium: normalize(read('avatarMedium')),
+  avatarFull: normalize(read('avatarFull')),
   groupName: '',
   games: readAll('gameName')
     .filter((g) => g && g.length < 40)

@@ -7,9 +7,9 @@
   "memberSince": "June 26, 2025",
   "onlineState": "online",
   "stateMessage": "Online",
-  "avatarIcon": "https://avatars.akamai.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765.jpg",
-  "avatarMedium": "https://avatars.akamai.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_medium.jpg",
-  "avatarFull": "https://avatars.akamai.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_full.jpg",
+  "avatarIcon": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765.jpg",
+  "avatarMedium": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_medium.jpg",
+  "avatarFull": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_full.jpg",
   "groupName": "",
   "games": [
     "Counter-Strike 2",
@@ -19,5 +19,5 @@
     "DDNet",
     "WRC 9 FIA World Rally Championship"
   ],
-  "updatedAt": "2026-11-13T14:24:25.948Z"
+  "updatedAt": "2026-11-13T14:30:51.912Z"
 }

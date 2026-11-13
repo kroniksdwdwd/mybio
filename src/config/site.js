@@ -42,7 +42,8 @@ export const site = {
     fallbackLocation: 'Singapore',
     fallbackSince: 'June 26, 2025',
     // Статус на случай, если live-запрос не удался
-    onlineState: 'offline',
+    // (актуальное значение лежит в src/data/steamProfile.json)
+    onlineState: '',
     // Игры (используются в fallback-режиме)
     games: ['Counter-Strike 2', 'ROB RUN', 'GeoGuessr', 'Euro Truck Simulator 2', 'DDNet'],
     // Показывать ли секцию Steam вообще

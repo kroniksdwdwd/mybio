@@ -992,15 +992,17 @@ code {
 }
 
 .player-panel {
+  width: 0;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transition: max-height 0.45s var(--ease), opacity 0.35s var(--ease);
+  transition: max-height 0.45s var(--ease), opacity 0.35s var(--ease), width 0.35s var(--ease);
 }
 .player.is-expanded {
   width: min(330px, calc(100vw - 32px));
 }
 .player.is-expanded .player-panel {
+  width: auto;
   max-height: 460px;
   opacity: 1;
   border-top: 1px solid var(--border-soft);
@@ -1144,7 +1146,20 @@ code {
 
 @media (max-width: 720px) {
   .nav-dots {
+    gap: 2px;
+    padding: 3px;
+  }
+  .nav-dot {
+    padding: 6px 9px;
+  }
+  .nav-dot-label {
     display: none;
+  }
+  .nav-dot.is-active {
+    padding: 6px 12px;
+  }
+  .nav-dot.is-active .nav-dot-label {
+    display: inline;
   }
   .nav-socials {
     display: none;
