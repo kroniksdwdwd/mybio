@@ -51,8 +51,8 @@ export const site = {
 
   // ── Фоновое видео первой секции ───────────────────────────
   video: {
-  src: '/media/bg.mp4',
-  poster: '/media/bg-poster.jpg',
+  src: 'media/bg.mp4',
+  poster: 'media/bg-poster.jpg',
   overlay: 0.62,
   },
 

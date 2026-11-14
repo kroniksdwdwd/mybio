@@ -4,10 +4,14 @@ import { scrollToSection } from '../lib/hooks';
 import Icon from './Icons';
 import Typewriter from './Typewriter';
 
-/**
- * Первая секция — About Me.
- * Фон: видео (если задано) + пиксельный градиентный fallback.
- */
+/** Путь с учётом BASE_URL (GitHub Pages живёт в подпапке /mybio/). */
+const asset = (path) => {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}${String(path).replace(/^\/+/, '')}`;
+};
+
 export default function Hero({ steam, steamChecking }) {
   const [mounted, setMounted] = useState(false);
   const videoRef = useRef(null);
@@ -30,13 +34,12 @@ export default function Hero({ steam, steamChecking }) {
 
   return (
     <section id="about" className={`hero ${mounted ? 'is-ready' : ''}`}>
-      {/* Фоновое видео */}
       {site.video.src && (
         <video
           ref={videoRef}
           className="hero-video"
-          src={site.video.src}
-          poster={site.video.poster || undefined}
+          src={asset(site.video.src)}
+          poster={asset(site.video.poster) || undefined}
           autoPlay
           muted
           loop
