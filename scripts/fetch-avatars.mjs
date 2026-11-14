@@ -73,6 +73,18 @@ async function spotifyAvatar() {
   }
 }
 
+/**
+ * Discord: страница отдаёт в og:image рекламный баннер, а не аватар.
+ * Настоящую аватарку можно получить только через API с токеном,
+ * поэтому берём дефолтную аватарку Discord по ID пользователя.
+ */
+function discordDefaultAvatar(url) {
+  const id = url.match(/users\/(\d{15,})/)?.[1];
+  if (!id) return null;
+  const index = Number((BigInt(id) >> 22n) % 6n);
+  return `https://cdn.discordapp.com/embed/avatars/${index}.png`;
+}
+
 async function fetchPage(url) {
   const res = await fetch(url, {
     headers: { 'user-agent': UA, 'accept-language': 'en-US,en;q=0.9' },
@@ -107,8 +119,13 @@ for (const social of list) {
         break;
       }
     }
+    // Discord отдаёт в og:image рекламный баннер — он нам не нужен
+    if (social.icon === 'discord') imageUrl = null;
     if (!imageUrl && social.icon === 'spotify') {
       imageUrl = await spotifyAvatar();
+    }
+    if (!imageUrl && social.icon === 'discord') {
+      imageUrl = discordDefaultAvatar(social.url);
     }
     if (!imageUrl) throw new Error('аватарка не найдена в HTML');
 

@@ -88,7 +88,6 @@ export default function MusicPlayer() {
     const saved = Number(localStorage.getItem(VOL_KEY));
     return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : music.local.volume;
   });
-  const [repeat, setRepeat] = useState(music.local.repeat);
 
   /* ── Интерфейс ──────────────────────────────────────────── */
   const [expanded, setExpanded] = useState(false);
@@ -382,10 +381,7 @@ export default function MusicPlayer() {
         onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || 0)}
         onEnded={() => {
-          if (repeat) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play();
-          } else next();
+          next();
         }}
         onError={() => setPlaying(false)}
         preload="none"
@@ -487,34 +483,21 @@ export default function MusicPlayer() {
             <Icon name="next" size={15} />
           </button>
 
-          <button
-            className={`player-btn ${repeat ? 'is-on' : ''}`}
-            onClick={() => setRepeat((v) => !v)}
-            aria-label="Повтор"
-            title="Повтор"
-            disabled={mode === 'spotify'}
+          <div
+            className="player-volume"
+            onMouseEnter={() => !isTouch && setVolumeOpen(true)}
+            onMouseLeave={() => !isTouch && setVolumeOpen(false)}
           >
-            <Icon name="repeat" size={14} />
-          </button>
-
-          <span className="player-sep" aria-hidden="true" />
-
-          <div className="player-volume">
             <button
               className={`player-btn player-volume-trigger ${volumeOpen ? 'is-visible' : ''}`}
               onClick={() => (isTouch ? setVolumeOpen((v) => !v) : setVolumeOpen(true))}
-              onMouseEnter={() => !isTouch && setVolumeOpen(true)}
               aria-label="Громкость"
               title="Громкость"
             >
               <Icon name={volume === 0 ? 'volumeMute' : 'volume'} size={15} />
             </button>
 
-            <div
-              className={`player-volume-panel ${volumeOpen ? 'is-open' : ''}`}
-              onMouseEnter={() => !isTouch && setVolumeOpen(true)}
-              onMouseLeave={() => !isTouch && setVolumeOpen(false)}
-            >
+            <div className={`player-volume-panel ${volumeOpen ? 'is-open' : ''}`}>
               <input
                 type="range"
                 min={0}

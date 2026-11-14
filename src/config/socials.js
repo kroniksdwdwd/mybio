@@ -35,10 +35,11 @@ export const socials = [
   },
   {
     name: 'Discord',
-    url: 'https://discord.com/users/',
-    username: '',
+    url: 'https://discord.com/users/1221764017702440969',
+    username: '1221764017702440969',
+    discordId: '1221764017702440969',
     icon: 'discord',
-    enabled: false,
+    enabled: true,
     order: 20,
   },
   {

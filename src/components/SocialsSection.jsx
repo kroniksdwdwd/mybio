@@ -98,7 +98,9 @@ export default function SocialsSection({ steam }) {
                   <span className="social-username">
                     {s.username || s.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                   </span>
-                  {s.discordId && <span className="social-extra">ID: {s.discordId}</span>}
+                  {s.discordId && s.discordId !== s.username && (
+                    <span className="social-extra">ID: {s.discordId}</span>
+                  )}
                 </span>
 
                 <Icon name="external" size={15} className="social-arrow" />
