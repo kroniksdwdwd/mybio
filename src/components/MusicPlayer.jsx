@@ -9,6 +9,18 @@ const MODE_KEY = 'mybio:player:mode';
 
 const SPOTIFY_ID_RE = /(playlist|album|track)\/([A-Za-z0-9]{10,})/;
 
+/**
+ * Путь к файлу относительно корня сайта.
+ * На GitHub Pages сайт лежит в /<repo>/, поэтому абсолютный путь
+ * /music/... указал бы на корень домена. Используем BASE_URL.
+ */
+const asset = (path) => {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}${String(path).replace(/^\/+/, '')}`;
+};
+
 /** Разбирает ссылку на Spotify и достаёт тип + id. */
 export function parseSpotifyUrl(url) {
   if (!url) return null;
@@ -84,6 +96,7 @@ export default function MusicPlayer() {
   const [volumeOpen, setVolumeOpen] = useState(false);
   const [notice, setNotice] = useState('');
   const [meta, setMeta] = useState(null);
+  const [embedAutoplay, setEmbedAutoplay] = useState(false);
 
   const audioRef = useRef(null);
   const rootRef = useRef(null);
@@ -105,8 +118,13 @@ export default function MusicPlayer() {
   const embedUrl = useMemo(() => {
     if (mode !== 'spotify' || !spotifyInfo) return '';
     const base = `https://open.spotify.com/embed/${spotifyInfo.type}/${spotifyInfo.id}`;
-    return `${base}?utm_source=generator&theme=${music.spotify.theme}`;
-  }, [mode, spotifyInfo]);
+    const params = new URLSearchParams({
+      utm_source: 'generator',
+      theme: String(music.spotify.theme),
+    });
+    if (embedAutoplay) params.set('autoplay', '1');
+    return `${base}?${params.toString()}`;
+  }, [mode, spotifyInfo, embedAutoplay]);
 
   useEffect(() => {
     if (mode !== 'spotify' || !music.spotify.playlistUrl) return;
@@ -131,7 +149,7 @@ export default function MusicPlayer() {
     const audio = audioRef.current;
     if (!audio || mode !== 'local' || !track) return;
 
-    audio.src = track.src;
+    audio.src = asset(track.src);
     audio.load();
     setTime(0);
     setDuration(0);
@@ -298,11 +316,23 @@ export default function MusicPlayer() {
     localStorage.setItem(MODE_KEY, nextMode);
   };
 
+  /** Кнопка Spotify: открывает плейлист и пытается запустить воспроизведение */
+  const openSpotify = () => {
+    if (!spotifyInfo) return;
+    if (mode !== 'spotify') {
+      pause();
+      setMode('spotify');
+      localStorage.setItem(MODE_KEY, 'spotify');
+    }
+    setExpanded(true);
+    setEmbedAutoplay(true);
+  };
+
   const progress = duration > 0 ? (time / duration) * 100 : 0;
 
   const title = mode === 'spotify' ? meta?.title || 'Spotify Playlist' : track?.title || 'No track';
   const artist = mode === 'spotify' ? meta?.author || 'Spotify' : track?.artist || 'local playlist';
-  const cover = mode === 'spotify' ? meta?.cover || '' : track?.cover || '';
+  const cover = mode === 'spotify' ? meta?.cover || '' : asset(track?.cover);
 
   return (
     <>
@@ -410,8 +440,6 @@ export default function MusicPlayer() {
             <Icon name="next" size={15} />
           </button>
 
-          <span className="player-sep" aria-hidden="true" />
-
           <button
             className={`player-btn ${shuffle ? 'is-on' : ''}`}
             onClick={() => setShuffle((v) => !v)}
@@ -431,32 +459,47 @@ export default function MusicPlayer() {
             <Icon name="repeat" size={14} />
           </button>
 
+          <span className="player-sep" aria-hidden="true" />
+
           <button
-            className="player-btn player-volume-trigger"
-            onClick={() => (isTouch ? setVolumeOpen((v) => !v) : setVolumeOpen(true))}
-            onMouseEnter={() => !isTouch && setVolumeOpen(true)}
-            aria-label="Громкость"
-            title="Громкость"
+            className={`player-btn ${mode === 'spotify' ? 'is-on' : ''}`}
+            onClick={openSpotify}
+            aria-label="Открыть плейлист Spotify"
+            title={mode === 'local' ? 'Открыть плейлист Spotify' : 'Обновить плейлист Spotify'}
+            disabled={!spotifyInfo}
           >
-            <Icon name={volume === 0 ? 'volumeMute' : 'volume'} size={15} />
+            <Icon name="spotifyGlyph" size={15} />
           </button>
 
-          <div
-            className={`player-volume-panel ${volumeOpen ? 'is-open' : ''}`}
-            onMouseEnter={() => !isTouch && setVolumeOpen(true)}
-            onMouseLeave={() => !isTouch && setVolumeOpen(false)}
-          >
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              value={volume}
-              onChange={(e) => setVolume(Number(e.target.value))}
+          <div className="player-volume">
+            <div
+              className={`player-volume-panel ${volumeOpen ? 'is-open' : ''}`}
+              onMouseEnter={() => !isTouch && setVolumeOpen(true)}
+              onMouseLeave={() => !isTouch && setVolumeOpen(false)}
+            >
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={volume}
+                onChange={(e) => setVolume(Number(e.target.value))}
+                style={{ '--value': Math.round(volume * 100) }}
+                aria-label="Громкость"
+                disabled={mode === 'spotify'}
+                title={mode === 'spotify' ? 'В режиме Spotify громкость — во встроенном плеере' : 'Громкость'}
+              />
+            </div>
+
+            <button
+              className={`player-btn player-volume-trigger ${volumeOpen ? 'is-visible' : ''}`}
+              onClick={() => (isTouch ? setVolumeOpen((v) => !v) : setVolumeOpen(true))}
+              onMouseEnter={() => !isTouch && setVolumeOpen(true)}
               aria-label="Громкость"
-              disabled={mode === 'spotify'}
-              title={mode === 'spotify' ? 'В режиме Spotify громкость — во встроенном плеере' : 'Громкость'}
-            />
+              title="Громкость"
+            >
+              <Icon name={volume === 0 ? 'volumeMute' : 'volume'} size={15} />
+            </button>
           </div>
         </div>
 
@@ -466,16 +509,6 @@ export default function MusicPlayer() {
             <span>{mode === 'local' ? formatTime(time) : '—'}</span>
             <span>{mode === 'local' ? formatTime(duration) : 'live'}</span>
           </div>
-
-          <button
-            className="player-btn"
-            onClick={() => switchMode(mode === 'local' ? 'spotify' : 'local')}
-            aria-label="Переключить источник"
-            title="Переключить источник: Spotify / локальные файлы"
-            disabled={!spotifyInfo && !hasLocal}
-          >
-            <Icon name="spotifyGlyph" size={14} />
-          </button>
         </div>
 
         {expanded && (
@@ -489,6 +522,7 @@ export default function MusicPlayer() {
             {mode === 'spotify' && embedUrl && music.spotify.showInPanel && (
               <div className="player-embed">
                 <iframe
+                  key={embedUrl}
                   title="Spotify player"
                   src={embedUrl}
                   width="100%"

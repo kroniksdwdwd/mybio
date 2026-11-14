@@ -148,7 +148,10 @@ checks.reveals = await evaluate(
 await evaluate('document.querySelector(".player-btn--main")?.click()');
 await sleep(1800);
 checks.audioPlaying = await evaluate(
-  '(() => { const a = document.querySelector("audio"); return a ? { paused: a.paused, time: a.currentTime.toFixed(2) } : "no audio"; })()'
+  '(() => { const a = document.querySelector("audio"); return a ? { paused: a.paused, time: a.currentTime.toFixed(2), src: a.currentSrc, error: a.error ? a.error.code : null } : "no audio"; })()'
+);
+checks.playerCover = await evaluate(
+  'document.querySelector(".player-cover img")?.getAttribute("src") || "no cover"'
 );
 
 // Клик по фону плеера раскрывает панель

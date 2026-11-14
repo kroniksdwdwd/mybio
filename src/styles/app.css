@@ -1076,6 +1076,12 @@
   margin: 0 3px;
   background: var(--border);
 }
+/* Громкость: слайдер выезжает ВЛЕВО от иконки и заливается слева */
+.player-volume {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
 .player-volume-trigger {
   opacity: 0;
   transition: opacity 0.3s var(--ease), background 0.22s var(--ease), color 0.22s var(--ease);
@@ -1088,42 +1094,51 @@
 .player-volume-panel {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   width: 0;
   overflow: hidden;
   opacity: 0;
-  transition: width 0.35s var(--ease), opacity 0.3s var(--ease), margin 0.35s var(--ease);
+  transition: width 0.32s var(--ease), opacity 0.25s var(--ease), margin 0.32s var(--ease);
 }
 .player-volume-panel.is-open {
-  width: 86px;
+  width: 84px;
   opacity: 1;
-  margin-left: 4px;
+  margin-right: 6px;
 }
 .player-volume-panel input[type='range'] {
   width: 78px;
-  height: 3px;
+  height: 4px;
   appearance: none;
   -webkit-appearance: none;
-  background: var(--border-strong);
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) calc(var(--value, 60) * 1%),
+    var(--border-strong) calc(var(--value, 60) * 1%),
+    var(--border-strong) 100%
+  );
   border-radius: 3px;
   outline: none;
   cursor: pointer;
+  accent-color: var(--accent);
 }
 .player-volume-panel input[type='range']::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
+  border: 0;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 10px rgba(122, 162, 247, 0.8);
+  background: var(--text);
+  box-shadow: 0 0 10px rgba(122, 162, 247, 0.7);
   cursor: pointer;
 }
 .player-volume-panel input[type='range']::-moz-range-thumb {
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
   border: 0;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--text);
   cursor: pointer;
 }
 .player-volume-panel input:disabled {

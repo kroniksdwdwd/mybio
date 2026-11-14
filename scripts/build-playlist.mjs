@@ -52,12 +52,12 @@ for (const file of files) {
   ];
   for (const c of candidates) {
     if (await exists(join(COVERS_DIR, c))) {
-      cover = `/music/covers/${c}`;
+      cover = `music/covers/${c}`;
       break;
     }
   }
 
-  tracks.push({ title, artist, album, src: `/music/${file}`, cover });
+  tracks.push({ title, artist, album, src: `music/${file}`, cover });
 }
 
 const body = tracks
