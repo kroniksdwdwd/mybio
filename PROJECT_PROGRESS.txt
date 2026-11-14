@@ -76,9 +76,12 @@ fe5fcd9  docs: update project progress after publish
 09ce32e  fix: cursor trail dots live 5s (explicit animation longhands)
 
 ------------------------------------------------------------
-ОСТАЛОСЬ (жду данные пользователя)
+ОСТАЛОСЬ
 ------------------------------------------------------------
-[ ] Discord: ник/ссылка и (желательно) ID — включить в socials.js
+[~] Discord: включён (ID 1221764017702440969). Аватарку Discord нельзя
+    получить без API-токена — стоит дефолтная аватарка Discord по ID.
+    Если пришлёшь ссылку на свой аватар (cdn.discordapp.com/avatars/...),
+    положу её в public/avatars/ вручную.
 [ ] Фоновое видео → public/media/bg.mp4 + src/config/site.js (video.src)
 
 ------------------------------------------------------------
