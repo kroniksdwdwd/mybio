@@ -17,25 +17,33 @@ https://kroniksdwdwd.github.io/mybio/
     описание, чипы, анимированный "scroll to explore"
 [x] Секция 2 — Steam Profile: реальные данные (аватар, ник, статус
     онлайн, город, дата регистрации, игры), карточка Steam-стиля
-[x] Секция 3 — Socials: карточки строятся динамически из socials.js
-[x] Музыкальный плеер: play/pause, next/prev, прогресс, громкость,
-    shuffle, repeat, обложка, drag&drop, позиция в localStorage
-[x] Два режима музыки: Spotify Embed + локальные MP3 (auto/spotify/local)
+[x] Секция 3 — Socials: 6 карточек (Twitch, 2x YouTube, Spotify,
+    SoundCloud, GitHub), Discord ждёт ник — карточка выключена
+[x] Музыкальный плеер: обложка + название сверху, управление снизу,
+    перетаскивание за шапку, play/pause, next/prev, прогресс,
+    громкость, shuffle, repeat, позиция в localStorage
+[x] Локальная музыка: 4 MP3 в public/music + обложки в covers,
+    плейлист собирается скриптом scripts/build-playlist.mjs
+    (ID3-теги: Shuta Yasukochi — fading into blue, fragmnts — four walls,
+    Lentia — Porcelain II, soluneia — still waiting)
+[x] Spotify-плейлист подключён (playlist/3a0tFyXbd9BOFyt6QClD2j),
+    режим auto: при наличии локальных MP3 играют они (полное управление)
 [x] Плавная инерционная прокрутка (src/lib/smoothScroll.js):
-    колесо не прыгает, а плавно догоняет цель; на мобильных и при
-    prefers-reduced-motion — нативная прокрутка
-[x] Кастомный курсор на 60 fps: точка сглаживается, кольцо отстаёт,
-    за курсором остаются синие точки на фоне (живут 5 секунд)
-[x] Верхние вкладки убраны, индикатор секций — тонкой полоской справа
-    (появляется после скролла)
+    нативный scroll-behavior отключается, чтобы не было двойной анимации
+[x] Печатающийся текст (Typewriter): ник и заголовки секций печатаются
+    по символам, при уходе со секции текст сбрасывается и печатается заново
+[x] "Приложение"-стиль анимации картинок (.reveal-media):
+    полупрозрачные и уменьшенные → плавно увеличиваются и смещаются вверх
+[x] Кастомный курсор 60fps: тонкий курсор, кольцо отстаёт,
+    синие точки на фоне живут 5 секунд (время жизни считается в JS)
 [x] Автодеплой: GitHub Actions (.github/workflows/deploy.yml) — успешно
 [x] Автообновление Steam-данных: .github/workflows/update-steam.yml
     (cron каждые 6 часов → коммит в src/data/steamProfile.json)
 [x] README.md — полная инструкция по всем настройкам
-[x] scripts/: fetch-steam.mjs, smoke.mjs (автотест), shot.mjs
-    (скриншоты), make-test-tone.mjs (тестовый звук)
+[x] scripts/: fetch-steam.mjs, build-playlist.mjs, smoke.mjs (автотест),
+    shot.mjs (скриншоты), make-test-tone.mjs (тестовый звук)
 [x] Автотест на живом сайте: рендер OK, ошибок консоли нет,
-    Steam отдаёт реальные данные, курсор и след работают
+    Steam отдаёт реальные данные, музыка играет, скролл плавный
 
 ------------------------------------------------------------
 ИСТОРИЯ КОМИТОВ
@@ -52,11 +60,8 @@ fe5fcd9  docs: update project progress after publish
 ------------------------------------------------------------
 ОСТАЛОСЬ (жду данные пользователя)
 ------------------------------------------------------------
-[ ] Ссылки на соцсети (Twitch, Discord, YouTube, Spotify, SoundCloud)
-    → src/config/socials.js, у каждой enabled: true
-[ ] Spotify-плейлист → src/config/music.js (music.spotify.playlistUrl)
+[ ] Discord: ник/ссылка и (желательно) ID — включить в socials.js
 [ ] Фоновое видео → public/media/bg.mp4 + src/config/site.js (video.src)
-[ ] MP3-треки → public/music/ + src/data/localPlaylist.js
 
 ------------------------------------------------------------
 ИЗВЕСТНЫЕ ОГРАНИЧЕНИЯ (честно)
@@ -67,7 +72,8 @@ fe5fcd9  docs: update project progress after publish
 - Spotify Embed не даёт программного управления треком: в режиме
   spotify панель разворачивает официальный плеер Spotify (там есть
   play/pause, next/prev, громкость). Полное управление — в local.
-- MP3 в .gitignore (лимит GitHub 100 МБ на файл) — инструкция в README.
+- MP3 лежат в репозитории (22 МБ), чтобы музыка играла на сайте.
+  Лимит GitHub — 100 МБ на файл.
 
 ------------------------------------------------------------
 ПОЛНЫЕ ДАННЫЕ STEAM (реальные)
