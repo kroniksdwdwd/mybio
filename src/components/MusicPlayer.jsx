@@ -69,6 +69,8 @@ export default function MusicPlayer() {
   }, [music.mode, spotifyInfo, hasLocal]);
 
   const [mode, setMode] = useState(() => {
+    // Если выбран режим 'local' — всегда играем только свои MP3
+    if (music.mode === 'local') return 'local';
     const saved = localStorage.getItem(MODE_KEY);
     if (saved === 'local' || saved === 'spotify') {
       if (saved === 'spotify' && !spotifyInfo) return 'local';
@@ -367,7 +369,6 @@ export default function MusicPlayer() {
     setExpanded(true);
     setEmbedAutoplay(true);
   };
-
   const progress = duration > 0 ? (time / duration) * 100 : 0;
 
   const title = mode === 'spotify' ? meta?.title || 'Spotify Playlist' : track?.title || 'No track';
@@ -435,16 +436,6 @@ export default function MusicPlayer() {
             <span className="player-title">{title}</span>
             <span className="player-artist">{artist}</span>
           </div>
-
-          <button
-            className={`player-head-btn ${mode === 'spotify' ? 'is-on' : ''}`}
-            onClick={openSpotify}
-            aria-label="Открыть плейлист Spotify"
-            title={mode === 'local' ? 'Открыть плейлист Spotify' : 'Обновить плейлист Spotify'}
-            disabled={!spotifyInfo}
-          >
-            <Icon name="spotifyGlyph" size={16} />
-          </button>
         </div>
 
         {/* Управление */}

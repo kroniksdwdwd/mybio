@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { site } from './config/site';
-import { loadSteamProfile, staticSteamProfile } from './lib/steam';
+import { loadSteamProfile, loadSteamStatus, staticSteamProfile } from './lib/steam';
 import smoothScroll from './lib/smoothScroll';
 import Nav, { SectionIndicator } from './components/Nav';
 import Hero from './components/Hero';
@@ -16,15 +16,32 @@ export default function App() {
 
   useEffect(() => {
     let alive = true;
-    // Каждый раз при заходе спрашиваем Steam, он онлайн или нет
-    loadSteamProfile().then((data) => {
-      if (!alive) return;
-      if (data) {
-        setSteam({ ...data, name: data.vanity || data.id64 });
-        setSteamLive(true);
-      }
+
+    // 1) Свежий статус из GitHub (обновляется каждые 5 минут)
+    loadSteamStatus().then((status) => {
+      if (!alive || !status) return;
+      setSteam((prev) => ({
+        ...prev,
+        onlineState: status.state,
+        stateMessage: status.stateMessage || status.state,
+        avatarFull: status.avatar || prev.avatarFull,
+        name: status.name || prev.name,
+      }));
+      setSteamLive(true);
       setSteamChecking(false);
     });
+
+    // 2) Дополнительно пробуем профиль напрямую (бывает точнее по времени)
+    loadSteamProfile().then((data) => {
+      if (!alive || !data) {
+        setSteamChecking(false);
+        return;
+      }
+      setSteam({ ...data, name: data.vanity || data.id64 });
+      setSteamLive(true);
+      setSteamChecking(false);
+    });
+
     return () => {
       alive = false;
     };

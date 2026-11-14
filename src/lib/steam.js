@@ -185,7 +185,6 @@ function writeCache(data) {
 export async function loadSteamProfile() {
   const cached = readCache();
   if (cached) return cached;
-
   const parsed = parseSteamId(site.steam.id);
   const id64 = parsed?.id64 || steamData.id64;
   const vanity = parsed?.vanity;
@@ -217,4 +216,29 @@ export async function loadSteamProfile() {
     }
   }
   return null;
+}
+
+/**
+ * Статус из файла steam-status.json, который GitHub Actions обновляет
+ * каждые 5 минут и публикует в ветку status. Файл читается напрямую
+ * с GitHub (там разрешён CORS), поэтому браузер всегда получает
+ * свежий online/offline без всяких прокси.
+ */
+export async function loadSteamStatus() {
+  const url =
+    'https://raw.githubusercontent.com/kroniksdwdwd/mybio/status/steam-status.json' +
+    `?t=${Date.now()}`;
+
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data || !data.state) return null;
+    return data;
+  } catch {
+    return null;
+  }
 }

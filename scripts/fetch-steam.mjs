@@ -1,21 +1,25 @@
 /**
- * Обновление данных Steam-профиля → src/data/steamProfile.json
+ * ============================================================
+ *  Обновление статуса Steam → steam-status.json
+ * ============================================================
  *
- * Запуск вручную:
- *   node scripts/fetch-steam.mjs
+ *  Запуск:  node scripts/fetch-steam.mjs
  *
- * Запуск в CI (GitHub Actions, update-steam.yml):
- *   node scripts/fetch-steam.mjs && git commit -am "chore: update steam profile data"
+ *  Скрипт скачивает профиль Steam и сохраняет:
+ *    - src/data/steamProfile.json — полные данные (аватар, игры и т.д.)
+ *    - steam-status.json — маленький файл со статусом, который
+ *      сайт читает напрямую с GitHub (браузеру не мешает CORS)
  *
- * GitHub-раннеры не ограничены CORS, поэтому скрипт тянет XML напрямую
- * с steamcommunity.com и складывает результат в репозиторий.
- * Сайт использует этот JSON как основной источник данных.
+ *  GitHub Actions запускает его каждые 5 минут и публикует
+ *  steam-status.json в ветку status — сайт берёт его оттуда.
+ * ============================================================
  */
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const STEAM_ID = process.argv[2] || '76561199870670958';
 const OUT = fileURLToPath(new URL('../src/data/steamProfile.json', import.meta.url));
+const OUT_STATUS = fileURLToPath(new URL('../steam-status.json', import.meta.url));
 
 const url = `https://steamcommunity.com/profiles/${STEAM_ID}/?xml=1`;
 const res = await fetch(url, {
@@ -31,12 +35,13 @@ const read = (tag) => {
   const m = xml.match(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?</${tag}>`));
   return m ? m[1].trim() : '';
 };
-// akamai-хост Steam периодически недоступен — всегда используем fastly
-const normalize = (url) => url.replace('avatars.akamai.steamstatic.com', 'avatars.fastly.steamstatic.com');
 const readAll = (tag) =>
   [...xml.matchAll(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?</${tag}>`, 'g'))].map((m) =>
     m[1].trim()
   );
+
+// akamai-хост Steam периодически недоступен — всегда используем fastly
+const normalize = (url) => url.replace('avatars.akamai.steamstatic.com', 'avatars.fastly.steamstatic.com');
 
 const avatarFull = normalize(read('avatarFull'));
 const hash = (avatarFull.match(/([a-f0-9]{40})(?:_full)?\.jpg/) || [])[1] || '';
@@ -52,7 +57,7 @@ const profile = {
   stateMessage: read('stateMessage') || 'Offline',
   avatarIcon: normalize(read('avatarIcon')),
   avatarMedium: normalize(read('avatarMedium')),
-  avatarFull: normalize(read('avatarFull')),
+  avatarFull,
   groupName: '',
   games: readAll('gameName')
     .filter((g) => g && g.length < 40)
@@ -66,5 +71,16 @@ if (!hash) {
 }
 
 await writeFile(OUT, `${JSON.stringify(profile, null, 2)}\n`, 'utf8');
+
+// Маленький файл со статусом — его сайт читает напрямую
+const status = {
+  online: profile.onlineState === 'online',
+  state: profile.onlineState,
+  name: profile.name,
+  avatar: profile.avatarFull,
+  updatedAt: profile.updatedAt,
+};
+await writeFile(OUT_STATUS, `${JSON.stringify(status, null, 2)}\n`, 'utf8');
+
 console.log('Профиль обновлён:', profile.name, '|', profile.onlineState);
-console.log('Файл:', OUT);
+console.log('Статус записан:', OUT_STATUS);

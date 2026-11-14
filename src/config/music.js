@@ -18,12 +18,15 @@
  */
 
 export const music = {
-  mode: 'auto', // 'auto' | 'spotify' | 'local'
+  // Сейчас играют только свои MP3-файлы.
+  // Если захочешь вернуть Spotify: поставь mode: 'spotify' и впиши
+  // playlistUrl ниже — кнопка Spotify появится в плеере.
+  mode: 'local', // 'auto' | 'spotify' | 'local'
 
   spotify: {
     // Ссылка на плейлист, альбом или трек:
     //   https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6
-    playlistUrl: 'https://open.spotify.com/playlist/3a0tFyXbd9BOFyt6QClD2j',
+    playlistUrl: '',
     // Тема embed-плеера: 0 = тёмная (подходит нам), 1 = светлая
     theme: 0,
     // Показывать плейлист в развёрнутой панели плеера
