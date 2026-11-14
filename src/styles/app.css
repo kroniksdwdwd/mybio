@@ -985,6 +985,33 @@
   opacity: 0.5;
 }
 
+/* Кнопка Spotify в шапке — справа от названия трека */
+.player-head-btn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: var(--r-md);
+  color: var(--muted);
+  transition: background 0.22s var(--ease), color 0.22s var(--ease), transform 0.22s var(--ease);
+}
+.player-head-btn:hover:not(:disabled) {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.player-head-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+.player-head-btn.is-on {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.player-head-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 /* Управление */
 .player-bar {
   display: flex;
@@ -1076,7 +1103,7 @@
   margin: 0 3px;
   background: var(--border);
 }
-/* Громкость: слайдер выезжает ВЛЕВО от иконки и заливается слева */
+/* Громкость: слайдер выезжает ВПРАВО от иконки и заливается слева */
 .player-volume {
   display: flex;
   align-items: center;
@@ -1094,7 +1121,6 @@
 .player-volume-panel {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   width: 0;
   overflow: hidden;
   opacity: 0;
@@ -1103,7 +1129,7 @@
 .player-volume-panel.is-open {
   width: 84px;
   opacity: 1;
-  margin-right: 6px;
+  margin-left: 6px;
 }
 .player-volume-panel input[type='range'] {
   width: 78px;

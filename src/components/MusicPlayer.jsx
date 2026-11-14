@@ -88,7 +88,6 @@ export default function MusicPlayer() {
     const saved = Number(localStorage.getItem(VOL_KEY));
     return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : music.local.volume;
   });
-  const [shuffle, setShuffle] = useState(music.local.shuffle);
   const [repeat, setRepeat] = useState(music.local.repeat);
 
   /* ── Интерфейс ──────────────────────────────────────────── */
@@ -136,6 +135,55 @@ export default function MusicPlayer() {
       alive = false;
     };
   }, [mode]);
+
+  /* ── Автозапуск музыки при открытии ───────────────────────
+     Браузеры блокируют автозапуск без действия пользователя,
+     поэтому сначала пробуем сразу, а если не вышло — включаем
+     при первом клике/нажатии клавиши на странице.              */
+  useEffect(() => {
+    if (mode !== 'local' || !track) return undefined;
+
+    let started = false;
+    const tryPlay = () => {
+      if (started) return;
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (!audio.src) {
+        audio.src = asset(track.src);
+        audio.load();
+      }
+      const p = audio.play();
+      if (p && typeof p.then === 'function') {
+        p.then(() => {
+          started = true;
+          setPlaying(true);
+        }).catch(() => {
+          /* браузер заблокировал — ждём первого действия */
+        });
+      }
+    };
+
+    const onFirstGesture = () => {
+      tryPlay();
+      if (started) {
+        window.removeEventListener('pointerdown', onFirstGesture);
+        window.removeEventListener('keydown', onFirstGesture);
+      }
+    };
+
+    // Небольшая пауза, чтобы страница успела «прогреться»
+    const timer = setTimeout(tryPlay, 600);
+
+    window.addEventListener('pointerdown', onFirstGesture);
+    window.addEventListener('keydown', onFirstGesture);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('pointerdown', onFirstGesture);
+      window.removeEventListener('keydown', onFirstGesture);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, track?.src]);
 
   /* ── Локальное воспроизведение ──────────────────────────── */
   useEffect(() => {
@@ -197,15 +245,8 @@ export default function MusicPlayer() {
 
   const next = useCallback(() => {
     if (mode !== 'local' || tracks.length === 0) return;
-    setIndex((i) => {
-      if (shuffle) {
-        let n = i;
-        while (tracks.length > 1 && n === i) n = Math.floor(Math.random() * tracks.length);
-        return n;
-      }
-      return (i + 1) % tracks.length;
-    });
-  }, [mode, tracks.length, shuffle]);
+    setIndex((i) => (i + 1) % tracks.length);
+  }, [mode, tracks.length]);
 
   const prev = useCallback(() => {
     if (mode !== 'local' || tracks.length === 0) return;
@@ -399,9 +440,15 @@ export default function MusicPlayer() {
             <span className="player-artist">{artist}</span>
           </div>
 
-          <span className="player-grip" aria-hidden="true">
-            <Icon name="music" size={13} />
-          </span>
+          <button
+            className={`player-head-btn ${mode === 'spotify' ? 'is-on' : ''}`}
+            onClick={openSpotify}
+            aria-label="Открыть плейлист Spotify"
+            title={mode === 'local' ? 'Открыть плейлист Spotify' : 'Обновить плейлист Spotify'}
+            disabled={!spotifyInfo}
+          >
+            <Icon name="spotifyGlyph" size={16} />
+          </button>
         </div>
 
         {/* Управление */}
@@ -441,15 +488,6 @@ export default function MusicPlayer() {
           </button>
 
           <button
-            className={`player-btn ${shuffle ? 'is-on' : ''}`}
-            onClick={() => setShuffle((v) => !v)}
-            aria-label="Перемешать"
-            title="Перемешать"
-            disabled={mode === 'spotify'}
-          >
-            <Icon name="shuffle" size={14} />
-          </button>
-          <button
             className={`player-btn ${repeat ? 'is-on' : ''}`}
             onClick={() => setRepeat((v) => !v)}
             aria-label="Повтор"
@@ -461,17 +499,17 @@ export default function MusicPlayer() {
 
           <span className="player-sep" aria-hidden="true" />
 
-          <button
-            className={`player-btn ${mode === 'spotify' ? 'is-on' : ''}`}
-            onClick={openSpotify}
-            aria-label="Открыть плейлист Spotify"
-            title={mode === 'local' ? 'Открыть плейлист Spotify' : 'Обновить плейлист Spotify'}
-            disabled={!spotifyInfo}
-          >
-            <Icon name="spotifyGlyph" size={15} />
-          </button>
-
           <div className="player-volume">
+            <button
+              className={`player-btn player-volume-trigger ${volumeOpen ? 'is-visible' : ''}`}
+              onClick={() => (isTouch ? setVolumeOpen((v) => !v) : setVolumeOpen(true))}
+              onMouseEnter={() => !isTouch && setVolumeOpen(true)}
+              aria-label="Громкость"
+              title="Громкость"
+            >
+              <Icon name={volume === 0 ? 'volumeMute' : 'volume'} size={15} />
+            </button>
+
             <div
               className={`player-volume-panel ${volumeOpen ? 'is-open' : ''}`}
               onMouseEnter={() => !isTouch && setVolumeOpen(true)}
@@ -490,16 +528,6 @@ export default function MusicPlayer() {
                 title={mode === 'spotify' ? 'В режиме Spotify громкость — во встроенном плеере' : 'Громкость'}
               />
             </div>
-
-            <button
-              className={`player-btn player-volume-trigger ${volumeOpen ? 'is-visible' : ''}`}
-              onClick={() => (isTouch ? setVolumeOpen((v) => !v) : setVolumeOpen(true))}
-              onMouseEnter={() => !isTouch && setVolumeOpen(true)}
-              aria-label="Громкость"
-              title="Громкость"
-            >
-              <Icon name={volume === 0 ? 'volumeMute' : 'volume'} size={15} />
-            </button>
           </div>
         </div>
 

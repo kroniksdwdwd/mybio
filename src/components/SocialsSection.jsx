@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import { socials } from '../config/socials';
 import { site } from '../config/site';
+import socialAvatars from '../data/socialAvatars.json';
 import { useReveal } from '../lib/hooks';
 import { useInView } from '../lib/useInView';
 import Icon from './Icons';
 import Typewriter from './Typewriter';
+
+/** Путь к файлу относительно корня сайта (GitHub Pages лежит в /<repo>/) */
+const asset = (path) => {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}${String(path).replace(/^\/+/, '')}`;
+};
 
 /**
  * Третья секция — Socials.
@@ -19,8 +28,9 @@ export default function SocialsSection({ steam }) {
     .filter((s) => s && s.enabled !== false)
     .sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
 
-  // Аватар подтягивается из Steam-профиля, иначе — из конфига
-  const avatar = steam?.avatarFull || site.avatar || site.avatarFallback;
+  // Аватар площадки (скачивается скриптом fetch-avatars.mjs),
+  // иначе — аватар из Steam-профиля
+  const fallbackAvatar = steam?.avatarFull || site.avatar || site.avatarFallback;
 
   useEffect(() => {
     sectionRef.current?.querySelectorAll('.reveal').forEach((el, i) => {
@@ -73,7 +83,11 @@ export default function SocialsSection({ steam }) {
                 rel="noreferrer noopener"
               >
                 <span className="social-avatar">
-                  <img src={avatar} alt="" loading="lazy" />
+                  <img
+                    src={asset(socialAvatars[s.url]) || fallbackAvatar}
+                    alt=""
+                    loading="lazy"
+                  />
                   <span className="social-badge" aria-hidden="true">
                     <Icon name={s.icon} size={13} />
                   </span>
