@@ -34,6 +34,7 @@ export default function Cursor() {
 
     const spawnTrail = (x, y) => {
       const container = document.querySelector('.cursor-trail');
+      window.__hasContainer = !!container;
       if (!container) return;
       while (container.childElementCount > TRAIL_MAX) {
         container.firstElementChild?.remove();

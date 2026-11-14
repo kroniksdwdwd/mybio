@@ -277,7 +277,10 @@ iframe {
     border-radius: 1px;
     background: var(--accent);
     box-shadow: 0 0 8px rgba(122, 162, 247, 0.75);
-    animation: trailFade 5s var(--ease) forwards;
+    animation-name: trailFade;
+    animation-duration: 5s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: forwards;
   }
   @keyframes trailFade {
     0% {

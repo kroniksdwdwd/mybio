@@ -114,13 +114,15 @@ const evaluate = async (expression) => {
 await new Promise((resolve) => ws.addEventListener('open', resolve));
 await send('Runtime.enable');
 await send('Page.enable');
-// Эмулируем «нормальную» мышь, иначе кастомный курсор отключается
+// Эмулируем обычную мышь и движение без reduced-motion,
+// иначе кастомный курсор и его анимации отключаются
 await send('Emulation.setEmulatedMedia', {
   features: [
     { name: 'hover', value: 'hover' },
     { name: 'pointer', value: 'fine' },
     { name: 'any-hover', value: 'hover' },
     { name: 'any-pointer', value: 'fine' },
+    { name: 'prefers-reduced-motion', value: 'no-preference' },
   ],
 });
 await send('Page.navigate', { url: URL_TARGET });
@@ -137,7 +139,7 @@ checks.steamAvatar = await evaluate(
 );
 checks.socialCards = await evaluate('document.querySelectorAll(".social-card").length');
 checks.playerTitle = await evaluate('document.querySelector(".player-title")?.textContent?.trim()');
-checks.navDots = await evaluate('document.querySelectorAll(".nav-dot").length');
+checks.sectionIndicator = await evaluate('document.querySelectorAll(".indicator-dot").length');
 checks.reveals = await evaluate(
   'document.querySelectorAll(".reveal.is-visible").length + "/" + document.querySelectorAll(".reveal").length'
 );
@@ -146,7 +148,7 @@ checks.reveals = await evaluate(
 await evaluate('document.querySelector(".player-btn--main")?.click()');
 await sleep(1800);
 checks.audioPlaying = await evaluate(
-  '(() => { const a = document.querySelector("audio"); return a ? { paused: a.paused, time: a.currentTime.toFixed(2), src: (a.currentSrc||"").slice(-24) } : "no audio"; })()'
+  '(() => { const a = document.querySelector("audio"); return a ? { paused: a.paused, time: a.currentTime.toFixed(2) } : "no audio"; })()'
 );
 
 // Клик по фону плеера раскрывает панель
@@ -155,33 +157,25 @@ await sleep(400);
 checks.expanded = await evaluate('document.querySelector(".player")?.classList.contains("is-expanded")');
 
 // Курсор: след из точек + плавное движение
-for (const [x, y] of [
-  [300, 300],
-  [420, 340],
-  [520, 380],
-  [760, 460],
-]) {
-  await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y, buttons: 0 });
-  await sleep(90);
-}
-await sleep(250);
+await evaluate(`
+  (() => {
+    const fire = (x, y) => {
+      window.dispatchEvent(new PointerEvent('pointermove', { clientX: x, clientY: y, bubbles: true }));
+      window.dispatchEvent(new MouseEvent('mousemove', { clientX: x, clientY: y, bubbles: true }));
+    };
+    for (let i = 0; i <= 20; i++) fire(300 + i * 30, 300 + i * 12);
+  })()
+`);
+await sleep(400);
 checks.cursorActive = await evaluate('document.body.classList.contains("cursor-custom")');
-checks.trailContainer = await evaluate('!!document.querySelector(".cursor-trail")');
-await evaluate(
-  'window.__pm = 0; window.addEventListener("pointermove", () => { window.__pm++; });'
-);
-await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 700, y: 500, buttons: 0 });
-await sleep(120);
-await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 820, y: 540, buttons: 0 });
-await sleep(300);
-checks.pointerMovesSeen = await evaluate('window.__pm');
 checks.trailDots = await evaluate('document.querySelectorAll(".cursor-trail-dot").length');
-checks.trailChildren = await evaluate('document.querySelector(".cursor-trail")?.childElementCount');
+checks.trailLifetime = await evaluate(`(() => {
+  const el = document.querySelector('.cursor-trail-dot');
+  return el ? getComputedStyle(el).animationDuration : 'n/a';
+})()`);
 checks.cursorDotTransform = await evaluate(
   'getComputedStyle(document.querySelector(".cursor-dot")).transform'
 );
-checks.cursorFrames = await evaluate('window.__cursorFrames || 0');
-checks.cursorTarget = await evaluate('window.__cursorTarget || "n/a"');
 
 console.log('\n=== РЕЗУЛЬТАТЫ ===');
 console.log(JSON.stringify(checks, null, 2));
