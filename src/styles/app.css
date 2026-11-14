@@ -744,7 +744,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 18px 20px;
+  padding: 20px 52px 20px 62px;
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   background: linear-gradient(160deg, rgba(26, 31, 43, 0.9), rgba(17, 21, 30, 0.9));
@@ -756,20 +756,23 @@
   border-color: var(--accent-line);
   box-shadow: var(--shadow-md), 0 0 34px -18px var(--accent);
 }
+/* Иконка в углу: статичная, без фона и без увеличения при наведении */
 .social-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
-  flex: none;
-  border-radius: 12px;
-  background: rgba(11, 13, 18, 0.6);
   color: var(--accent);
-  transition: background 0.35s var(--ease), color 0.35s var(--ease);
 }
-.social-card:hover .social-icon {
-  color: var(--bg);
-  background: var(--accent);
+.social-icon img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  border-radius: 5px;
 }
 .social-text {
   display: flex;
@@ -795,13 +798,15 @@
   font-family: var(--font-mono);
 }
 .social-arrow {
-  flex: none;
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--muted-2);
-  transition: transform 0.35s var(--ease), color 0.35s var(--ease);
+  transition: color 0.3s var(--ease);
 }
 .social-card:hover .social-arrow {
   color: var(--accent);
-  transform: translate(3px, -3px);
 }
 .socials-empty {
   display: flex;

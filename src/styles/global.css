@@ -307,12 +307,12 @@ iframe {
     border-color: var(--accent);
   }
 
-  /* След из синих точек: появляются, держатся 5 секунд и плавно гаснут */
+  /* След из синих точек — под всем интерфейсом (кроме индикатора секций) */
   .cursor-trail {
     inset: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 9998;
+    z-index: 0;
     overflow: hidden;
   }
   .cursor-trail-dot {

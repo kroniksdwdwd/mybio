@@ -1,9 +1,35 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { socials } from '../config/socials';
 import { useReveal } from '../lib/hooks';
 import { useInView } from '../lib/useInView';
 import Icon from './Icons';
 import Typewriter from './Typewriter';
+
+/**
+ * Иконка площадки: автоматически подтягивает фавиконку сайта,
+ * а если она не загрузилась — показывает фирменную иконку из конфига.
+ */
+function SocialFavicon({ url, icon }) {
+  const [failed, setFailed] = useState(false);
+
+  let domain = '';
+  try {
+    domain = new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    domain = '';
+  }
+
+  if (!domain || failed) return <Icon name={icon} size={22} />;
+
+  return (
+    <img
+      src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
+      alt=""
+      loading="lazy"
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 /**
  * Третья секция — Socials.
@@ -68,9 +94,10 @@ export default function SocialsSection() {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                <span className="social-icon reveal-media">
-                  <Icon name={s.icon} size={20} />
+                <span className="social-icon">
+                  <SocialFavicon url={s.url} icon={s.icon} />
                 </span>
+
                 <span className="social-text">
                   <span className="social-name">{s.name}</span>
                   <span className="social-username">
@@ -78,6 +105,7 @@ export default function SocialsSection() {
                   </span>
                   {s.discordId && <span className="social-extra">ID: {s.discordId}</span>}
                 </span>
+
                 <Icon name="external" size={15} className="social-arrow" />
               </a>
             ))}
