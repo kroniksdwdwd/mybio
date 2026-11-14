@@ -14,13 +14,20 @@ https://kroniksdwdwd.github.io/mybio/
 [x] Vite 5 + React 18, base './' (работает на GitHub Pages)
 [x] Конфиг-слой: src/config/site.js, socials.js, music.js
 [x] Секция 1 — About Me: видео-фон (+fallback), аватар Steam, имя,
-    описание, чипы, ссылки, анимированный "scroll to explore"
+    описание, чипы, анимированный "scroll to explore"
 [x] Секция 2 — Steam Profile: реальные данные (аватар, ник, статус
     онлайн, город, дата регистрации, игры), карточка Steam-стиля
 [x] Секция 3 — Socials: карточки строятся динамически из socials.js
 [x] Музыкальный плеер: play/pause, next/prev, прогресс, громкость,
     shuffle, repeat, обложка, drag&drop, позиция в localStorage
 [x] Два режима музыки: Spotify Embed + локальные MP3 (auto/spotify/local)
+[x] Плавная инерционная прокрутка (src/lib/smoothScroll.js):
+    колесо не прыгает, а плавно догоняет цель; на мобильных и при
+    prefers-reduced-motion — нативная прокрутка
+[x] Кастомный курсор на 60 fps: точка сглаживается, кольцо отстаёт,
+    за курсором остаются синие точки на фоне (живут 5 секунд)
+[x] Верхние вкладки убраны, индикатор секций — тонкой полоской справа
+    (появляется после скролла)
 [x] Автодеплой: GitHub Actions (.github/workflows/deploy.yml) — успешно
 [x] Автообновление Steam-данных: .github/workflows/update-steam.yml
     (cron каждые 6 часов → коммит в src/data/steamProfile.json)
@@ -28,7 +35,7 @@ https://kroniksdwdwd.github.io/mybio/
 [x] scripts/: fetch-steam.mjs, smoke.mjs (автотест), shot.mjs
     (скриншоты), make-test-tone.mjs (тестовый звук)
 [x] Автотест на живом сайте: рендер OK, ошибок консоли нет,
-    Steam отдаёт реальные данные, плеер играет
+    Steam отдаёт реальные данные, курсор и след работают
 
 ------------------------------------------------------------
 ИСТОРИЯ КОМИТОВ
@@ -37,6 +44,10 @@ c8b3af9  Initial project setup
 56250d0  feat: about page, steam profile, socials and music player
 21e34a1  feat: steam live data via CI, reveal fixes, smoke tests
 78062b4  fix: restore original design, compact player width, steam avatar host
+fe5fcd9  docs: update project progress after publish
+2e802f3  feat: remove top tabs, add slim side section indicator, smoother reveals
+05d59fc  feat: smooth inertial scroll, 60fps cursor with lagging trail dots
+09ce32e  fix: cursor trail dots live 5s (explicit animation longhands)
 
 ------------------------------------------------------------
 ОСТАЛОСЬ (жду данные пользователя)
