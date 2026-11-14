@@ -26,8 +26,13 @@ https://kroniksdwdwd.github.io/mybio/
     плейлист собирается скриптом scripts/build-playlist.mjs
     (ID3-теги: Shuta Yasukochi — fading into blue, fragmnts — four walls,
     Lentia — Porcelain II, soluneia — still waiting)
-[x] Spotify-плейлист подключён (playlist/3a0tFyXbd9BOFyt6QClD2j),
-    режим auto: при наличии локальных MP3 играют они (полное управление)
+[x] ВАЖНО: пути к файлам относительные (music/...) + BASE_URL — на
+    GitHub Pages сайт живёт в /mybio/, и абсолютный /music/... указывал
+    на корень домена (из-за этого не играла музыка и не грузились обложки)
+[x] Spotify-плейлист подключён (playlist/3a0tFyXbd9BOFyt6QClD2j):
+    кнопка со значком Spotify в плеере открывает плейлист с автозапуском
+[x] Слайдер громкости выезжает ВЛЕВО от иконки, заливается слева
+    (градиент по --value), иконка не пропадает, пока слайдер открыт
 [x] Плавная инерционная прокрутка (src/lib/smoothScroll.js):
     нативный scroll-behavior отключается, чтобы не было двойной анимации
 [x] Печатающийся текст (Typewriter): ник и заголовки секций печатаются
