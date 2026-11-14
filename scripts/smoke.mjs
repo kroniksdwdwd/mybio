@@ -114,6 +114,16 @@ const evaluate = async (expression) => {
 await new Promise((resolve) => ws.addEventListener('open', resolve));
 await send('Runtime.enable');
 await send('Page.enable');
+// Эмулируем «нормальную» мышь, иначе кастомный курсор отключается
+await send('Emulation.setEmulatedMedia', {
+  features: [
+    { name: 'hover', value: 'hover' },
+    { name: 'pointer', value: 'fine' },
+    { name: 'any-hover', value: 'hover' },
+    { name: 'any-pointer', value: 'fine' },
+  ],
+});
+await send('Page.navigate', { url: URL_TARGET });
 await sleep(3500);
 
 const checks = {};
@@ -143,6 +153,35 @@ checks.audioPlaying = await evaluate(
 await evaluate('document.querySelector(".player-bar")?.click()');
 await sleep(400);
 checks.expanded = await evaluate('document.querySelector(".player")?.classList.contains("is-expanded")');
+
+// Курсор: след из точек + плавное движение
+for (const [x, y] of [
+  [300, 300],
+  [420, 340],
+  [520, 380],
+  [760, 460],
+]) {
+  await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y, buttons: 0 });
+  await sleep(90);
+}
+await sleep(250);
+checks.cursorActive = await evaluate('document.body.classList.contains("cursor-custom")');
+checks.trailContainer = await evaluate('!!document.querySelector(".cursor-trail")');
+await evaluate(
+  'window.__pm = 0; window.addEventListener("pointermove", () => { window.__pm++; });'
+);
+await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 700, y: 500, buttons: 0 });
+await sleep(120);
+await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 820, y: 540, buttons: 0 });
+await sleep(300);
+checks.pointerMovesSeen = await evaluate('window.__pm');
+checks.trailDots = await evaluate('document.querySelectorAll(".cursor-trail-dot").length');
+checks.trailChildren = await evaluate('document.querySelector(".cursor-trail")?.childElementCount');
+checks.cursorDotTransform = await evaluate(
+  'getComputedStyle(document.querySelector(".cursor-dot")).transform'
+);
+checks.cursorFrames = await evaluate('window.__cursorFrames || 0');
+checks.cursorTarget = await evaluate('window.__cursorTarget || "n/a"');
 
 console.log('\n=== РЕЗУЛЬТАТЫ ===');
 console.log(JSON.stringify(checks, null, 2));

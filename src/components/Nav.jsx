@@ -45,15 +45,16 @@ export default function Nav() {
  */
 export function SectionIndicator() {
   const [active, setActive] = useState(site.sections[0]?.id);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const ids = site.sections.map((s) => s.id);
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
+        const visibleEntries = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible.length) setActive(visible[0].target.id);
+        if (visibleEntries.length) setActive(visibleEntries[0].target.id);
       },
       { threshold: [0.15, 0.4, 0.7], rootMargin: '-15% 0px -30% 0px' }
     );
@@ -61,11 +62,22 @@ export function SectionIndicator() {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
-    return () => observer.disconnect();
+
+    const onScroll = () => setVisible(window.scrollY > 120);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   return (
-    <nav className="section-indicator" aria-label="Навигация по секциям">
+    <nav
+      className={`section-indicator ${visible ? 'is-visible' : ''}`}
+      aria-label="Навигация по секциям"
+    >
       {site.sections.map((s) => (
         <button
           key={s.id}

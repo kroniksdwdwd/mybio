@@ -113,10 +113,6 @@ export default function Hero({ steam }) {
                 {l.name}
               </a>
             ))}
-          <button className="hero-link hero-link--btn" onClick={() => scrollToSection(nextSection)}>
-            <Icon name="steam" size={15} />
-            Steam Profile
-          </button>
         </div>
       </div>
 

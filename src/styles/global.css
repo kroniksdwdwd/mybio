@@ -226,12 +226,12 @@ iframe {
     cursor: none !important;
   }
   .cursor-dot,
-  .cursor-ring {
+  .cursor-ring,
+  .cursor-trail {
     position: fixed;
     top: 0;
     left: 0;
     pointer-events: none;
-    z-index: 9999;
     will-change: transform;
   }
   .cursor-dot {
@@ -241,6 +241,7 @@ iframe {
     background: var(--accent);
     border-radius: 1px;
     box-shadow: 0 0 12px rgba(122, 162, 247, 0.9);
+    z-index: 9999;
   }
   .cursor-ring {
     width: 26px;
@@ -248,14 +249,52 @@ iframe {
     margin: -13px 0 0 -13px;
     border: 1px solid var(--accent-line);
     border-radius: 50%;
+    z-index: 9999;
     transition: width 0.25s var(--ease), height 0.25s var(--ease), margin 0.25s var(--ease),
-      background 0.25s var(--ease), border-color 0.25s var(--ease);
+      background 0.25s var(--ease), border-color 0.25s var(--ease), opacity 0.25s var(--ease);
   }
   .cursor-ring.is-hover {
-    width: 40px;
-    height: 40px;
-    margin: -20px 0 0 -20px;
+    width: 42px;
+    height: 42px;
+    margin: -21px 0 0 -21px;
     background: rgba(122, 162, 247, 0.08);
     border-color: var(--accent);
+  }
+
+  /* След из синих точек: появляются, держатся 5 секунд и плавно гаснут */
+  .cursor-trail {
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9998;
+    overflow: hidden;
+  }
+  .cursor-trail-dot {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    margin: -2.5px 0 0 -2.5px;
+    border-radius: 1px;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(122, 162, 247, 0.75);
+    animation: trailFade 5s var(--ease) forwards;
+  }
+  @keyframes trailFade {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    5% {
+      opacity: 0.85;
+      transform: scale(1);
+    }
+    82% {
+      opacity: 0.85;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.35);
+    }
   }
 }

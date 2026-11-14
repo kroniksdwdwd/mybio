@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { site } from './config/site';
 import { loadSteamProfile, staticSteamProfile } from './lib/steam';
+import smoothScroll from './lib/smoothScroll';
 import Nav, { SectionIndicator } from './components/Nav';
 import Hero from './components/Hero';
 import SteamSection from './components/SteamSection';
@@ -22,6 +23,12 @@ export default function App() {
     return () => {
       alive = false;
     };
+  }, []);
+
+  // Плавная инерционная прокрутка
+  useEffect(() => {
+    smoothScroll.init();
+    return () => smoothScroll.destroy();
   }, []);
 
   return (

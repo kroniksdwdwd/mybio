@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import smoothScroll from './smoothScroll';
 
 /**
  * Добавляет класс `is-visible` элементам с классом `.reveal`,
@@ -68,5 +69,6 @@ export function useScrollSpy(ids = []) {
 export function scrollToSection(id) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const top = el.getBoundingClientRect().top + window.scrollY;
+  smoothScroll.scrollTo(top);
 }
