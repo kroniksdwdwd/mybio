@@ -39,7 +39,7 @@ export default function App() {
       <main className="app-main">
         <Hero steam={steam} steamLive={steamLive} />
         {site.steam.enabled && <SteamSection steam={steam} steamLive={steamLive} />}
-        <SocialsSection />
+        <SocialsSection steam={steam} />
       </main>
       <MusicPlayer />
       <footer className="footer">

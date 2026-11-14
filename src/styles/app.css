@@ -743,8 +743,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 20px 52px 20px 62px;
+  gap: 16px;
+  padding: 18px 52px 18px 20px;
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   background: linear-gradient(160deg, rgba(26, 31, 43, 0.9), rgba(17, 21, 30, 0.9));
@@ -756,24 +756,37 @@
   border-color: var(--accent-line);
   box-shadow: var(--shadow-md), 0 0 34px -18px var(--accent);
 }
-/* Иконка в углу: статичная, без фона и без увеличения при наведении */
-.social-icon {
+
+/* Квадрат с аватаром профиля */
+.social-avatar {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex: none;
+}
+.social-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  background: var(--panel-2);
+}
+
+/* Иконка площадки — в углу квадрата */
+.social-badge {
   position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
+  right: -6px;
+  bottom: -6px;
   display: grid;
   place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--panel);
+  border: 1px solid var(--border);
   color: var(--accent);
 }
-.social-icon img {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-  border-radius: 5px;
-}
+
 .social-text {
   display: flex;
   flex-direction: column;

@@ -1,48 +1,26 @@
 import { useEffect, useState } from 'react';
 import { socials } from '../config/socials';
+import { site } from '../config/site';
 import { useReveal } from '../lib/hooks';
 import { useInView } from '../lib/useInView';
 import Icon from './Icons';
 import Typewriter from './Typewriter';
 
 /**
- * Иконка площадки: автоматически подтягивает фавиконку сайта,
- * а если она не загрузилась — показывает фирменную иконку из конфига.
- */
-function SocialFavicon({ url, icon }) {
-  const [failed, setFailed] = useState(false);
-
-  let domain = '';
-  try {
-    domain = new URL(url).hostname.replace(/^www\./, '');
-  } catch {
-    domain = '';
-  }
-
-  if (!domain || failed) return <Icon name={icon} size={22} />;
-
-  return (
-    <img
-      src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
-      alt=""
-      loading="lazy"
-      onError={() => setFailed(true)}
-    />
-  );
-}
-
-/**
  * Третья секция — Socials.
- * Карточки строятся динамически из src/config/socials.js,
- * любая новая запись с enabled: true появляется автоматически.
+ * В каждой карточке: квадрат с аватаром профиля, а в его углу —
+ * иконка площадки. Список берётся из src/config/socials.js.
  */
-export default function SocialsSection() {
+export default function SocialsSection({ steam }) {
   const sectionRef = useReveal('.reveal');
   const [titleRef, titleVisible] = useInView({ threshold: 0.35 });
 
   const list = [...socials]
     .filter((s) => s && s.enabled !== false)
     .sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
+
+  // Аватар подтягивается из Steam-профиля, иначе — из конфига
+  const avatar = steam?.avatarFull || site.avatar || site.avatarFallback;
 
   useEffect(() => {
     sectionRef.current?.querySelectorAll('.reveal').forEach((el, i) => {
@@ -94,8 +72,11 @@ export default function SocialsSection() {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                <span className="social-icon">
-                  <SocialFavicon url={s.url} icon={s.icon} />
+                <span className="social-avatar">
+                  <img src={avatar} alt="" loading="lazy" />
+                  <span className="social-badge" aria-hidden="true">
+                    <Icon name={s.icon} size={13} />
+                  </span>
                 </span>
 
                 <span className="social-text">
