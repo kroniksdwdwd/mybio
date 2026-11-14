@@ -82,13 +82,18 @@ export default function MusicPlayer() {
 
   /* ── Локальные треки ────────────────────────────────────── */
   const [tracks] = useState(localPlaylist);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => {
+  const len = localPlaylist.length;
+  return len > 0 ? Math.floor(Math.random() * len) : 0;
+  });
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(() => {
-    const saved = Number(localStorage.getItem(VOL_KEY));
-    return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : music.local.volume;
+  const raw = localStorage.getItem(VOL_KEY);
+  if (raw === null) return music.local.volume;
+  const saved = Number(raw);
+  return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : music.local.volume;
   });
 
   /* ── Интерфейс ──────────────────────────────────────────── */
