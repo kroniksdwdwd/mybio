@@ -9,7 +9,7 @@ import Typewriter from './Typewriter';
  * Вторая секция — Steam Profile.
  * Показывает реальные данные: ник, аватар, статус, город, игры.
  */
-export default function SteamSection({ steam }) {
+export default function SteamSection({ steam, steamChecking }) {
   const sectionRef = useReveal('.reveal');
   const [titleRef, titleVisible] = useInView({ threshold: 0.35 });
 
@@ -26,7 +26,7 @@ export default function SteamSection({ steam }) {
     <section id="steam" className="steam-section" ref={sectionRef}>
       <div className="container">
         <div className="section-head" ref={titleRef}>
-          <span className="section-kicker reveal">02 / Steam Profile</span>
+          <span className="section-kicker reveal">02 / Steam</span>
           <h2 className="section-title">
             <Typewriter
               segments={[
@@ -38,9 +38,6 @@ export default function SteamSection({ steam }) {
               speed={34}
             />
           </h2>
-          <p className="section-sub reveal">
-            Реальные данные профиля: аватар, ник, статус в сети и игры.
-          </p>
         </div>
 
         <div className="steam-card reveal">
@@ -58,8 +55,12 @@ export default function SteamSection({ steam }) {
                 {steam?.name || 'Steam user'}
                 {isOnline && <span className="steam-online-dot" title="Online" />}
               </h3>
-              <span className={`steam-status ${isOnline ? 'is-online' : 'is-offline'}`}>
-                {isOnline ? 'online' : 'offline'}
+              <span
+                className={`steam-status ${
+                  steamChecking ? 'is-checking' : isOnline ? 'is-online' : 'is-offline'
+                }`}
+              >
+                {steamChecking ? 'проверяю…' : isOnline ? 'online' : 'offline'}
               </span>
             </div>
 

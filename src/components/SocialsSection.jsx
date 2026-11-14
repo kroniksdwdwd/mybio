@@ -54,11 +54,6 @@ export default function SocialsSection({ steam }) {
               speed={34}
             />
           </h2>
-          <p className="section-sub reveal">
-            Все мои площадки в одном месте. Список берётся из{' '}
-            <code>src/config/socials.js</code> — добавь запись с <code>enabled: true</code>, и
-            карточка появится сама.
-          </p>
         </div>
 
         {list.length === 0 ? (
@@ -84,7 +79,7 @@ export default function SocialsSection({ steam }) {
               >
                 <span className="social-avatar">
                   <img
-                    src={asset(socialAvatars[s.url]) || fallbackAvatar}
+                    src={asset(s.avatar) || asset(socialAvatars[s.url]) || fallbackAvatar}
                     alt=""
                     loading="lazy"
                   />

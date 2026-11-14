@@ -8,7 +8,7 @@ import Typewriter from './Typewriter';
  * Первая секция — About Me.
  * Фон: видео (если задано) + пиксельный градиентный fallback.
  */
-export default function Hero({ steam }) {
+export default function Hero({ steam, steamChecking }) {
   const [mounted, setMounted] = useState(false);
   const videoRef = useRef(null);
 
@@ -54,9 +54,14 @@ export default function Hero({ steam }) {
       <div className="hero-vignette" aria-hidden="true" />
 
       <div className="hero-inner container">
-        <div className={`hero-status reveal ${mounted ? 'is-visible' : ''} ${isOnline ? 'is-online' : ''}`} style={{ '--delay': '0ms' }}>
+        <div
+          className={`hero-status reveal ${mounted ? 'is-visible' : ''} ${
+            steamChecking ? 'is-checking' : isOnline ? 'is-online' : ''
+          }`}
+          style={{ '--delay': '0ms' }}
+        >
           <span className="hero-status-dot" aria-hidden="true" />
-          {isOnline ? 'online' : 'offline'}
+          {steamChecking ? 'проверяю статус' : isOnline ? 'online' : 'offline'}
         </div>
 
         <div className={`hero-avatar reveal-media ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '60ms' }}>

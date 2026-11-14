@@ -19,7 +19,7 @@ import steamData from '../data/steamProfile.json';
  */
 
 const CACHE_KEY = 'mybio:steam-profile';
-const CACHE_TTL = 5 * 60 * 1000; // 5 минут
+const CACHE_TTL = 60 * 1000; // минута — статус проверяется при каждом заходе
 
 /** Нормализует то, что вписал пользователь: ID, ссылку на профиль или vanity-url. */
 export function parseSteamId(input) {
@@ -196,7 +196,7 @@ export async function loadSteamProfile() {
   for (const proxy of PROXIES) {
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 6000);
+      const timer = setTimeout(() => controller.abort(), 5000);
       const res = await fetch(proxy.build(target), { signal: controller.signal });
       clearTimeout(timer);
       if (!res.ok) continue;

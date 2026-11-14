@@ -13,9 +13,9 @@
 export const site = {
   // ── Основное ───────────────────────────────────────────────
   name: 'hilkach',
-  tagline: 'full-stack developer',
+  tagline: 'streamer & creator',
   description:
-    'Разрабатываю проекты, в которых чистый код встречается с аккуратным дизайном. Люблю терминал, тёмные интерфейсы и пиксель-арт.',
+    'Стримлю на Twitch, снимаю гайды по играм на YouTube и собираю музыку. Тут можно найти все мои площадки.',
 
   // ── Аватар ─────────────────────────────────────────────────
   // Если avatar пустой — аватар подгрузится автоматически из Steam.
@@ -23,10 +23,9 @@ export const site = {
   avatarFallback: '/media/avatar-placeholder.svg',
 
   // ── Локация / статус (маленькие чипы под описанием) ────────
-  // Например: 'GMT+3', 'Open for work', '18 y/o'
   chips: [
     { id: 'location', label: 'Location', value: 'Europe', icon: 'globe' },
-    { id: 'status', label: 'Status', value: 'Online', icon: 'signal' },
+    { id: 'music', label: 'Now', value: 'Music on', icon: 'music' },
   ],
 
   // ── Steam ──────────────────────────────────────────────────

@@ -109,6 +109,14 @@ const list = socials.filter((s) => s && s.enabled !== false);
 
 for (const social of list) {
   const key = social.url;
+
+  // Своя аватарка, указанная в конфиге — не трогаем
+  if (social.avatar) {
+    result[key] = social.avatar;
+    console.log(`— ${social.name}: своя аватарка (${social.avatar})`);
+    continue;
+  }
+
   try {
     const html = await fetchPage(social.url);
     let imageUrl = null;

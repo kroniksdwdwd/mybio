@@ -12,13 +12,18 @@ import Cursor from './components/Cursor';
 export default function App() {
   const [steam, setSteam] = useState(() => staticSteamProfile());
   const [steamLive, setSteamLive] = useState(false);
+  const [steamChecking, setSteamChecking] = useState(true);
 
   useEffect(() => {
     let alive = true;
+    // Каждый раз при заходе спрашиваем Steam, он онлайн или нет
     loadSteamProfile().then((data) => {
-      if (!alive || !data) return;
-      setSteam({ ...data, name: data.vanity || data.id64 });
-      setSteamLive(true);
+      if (!alive) return;
+      if (data) {
+        setSteam({ ...data, name: data.vanity || data.id64 });
+        setSteamLive(true);
+      }
+      setSteamChecking(false);
     });
     return () => {
       alive = false;
@@ -37,8 +42,10 @@ export default function App() {
       <Nav sections={site.sections} />
       <SectionIndicator />
       <main className="app-main">
-        <Hero steam={steam} steamLive={steamLive} />
-        {site.steam.enabled && <SteamSection steam={steam} steamLive={steamLive} />}
+        <Hero steam={steam} steamLive={steamLive} steamChecking={steamChecking} />
+        {site.steam.enabled && (
+          <SteamSection steam={steam} steamLive={steamLive} steamChecking={steamChecking} />
+        )}
         <SocialsSection steam={steam} />
       </main>
       <MusicPlayer />

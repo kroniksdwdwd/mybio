@@ -38,6 +38,8 @@ export const socials = [
     url: 'https://discord.com/users/1221764017702440969',
     username: '1221764017702440969',
     discordId: '1221764017702440969',
+    // Своя аватарка (если не указать — подтянется автоматически)
+    avatar: 'avatars/discord.webp',
     icon: 'discord',
     enabled: true,
     order: 20,
