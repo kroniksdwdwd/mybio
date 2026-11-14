@@ -37,6 +37,7 @@ class SmoothScroller {
 
     this.enabled = true;
     this.current = this.target = window.scrollY;
+    document.documentElement.classList.add('smooth-scroll');
 
     window.addEventListener('wheel', this.handleWheel, { passive: false });
     window.addEventListener('keydown', this.handleKey);
@@ -46,6 +47,7 @@ class SmoothScroller {
 
   destroy() {
     if (!this.enabled) return;
+    document.documentElement.classList.remove('smooth-scroll');
     window.removeEventListener('wheel', this.handleWheel);
     window.removeEventListener('keydown', this.handleKey);
     window.removeEventListener('scroll', this.handleScroll);

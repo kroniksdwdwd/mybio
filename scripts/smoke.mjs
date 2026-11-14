@@ -177,6 +177,18 @@ checks.cursorDotTransform = await evaluate(
   'getComputedStyle(document.querySelector(".cursor-dot")).transform'
 );
 
+// Плавная прокрутка: колесо мыши должно плавно скроллить страницу
+checks.smoothScrollEnabled = await evaluate(
+  'document.documentElement.classList.contains("smooth-scroll")'
+);
+await evaluate(
+  'window.dispatchEvent(new WheelEvent("wheel", { deltaY: 700, bubbles: true, cancelable: true }))'
+);
+await sleep(120);
+checks.scrollMid = await evaluate('Math.round(window.scrollY)');
+await sleep(700);
+checks.scrollEnd = await evaluate('Math.round(window.scrollY)');
+
 console.log('\n=== РЕЗУЛЬТАТЫ ===');
 console.log(JSON.stringify(checks, null, 2));
 console.log('\n=== ОШИБКИ КОНСОЛИ ===');

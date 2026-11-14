@@ -34,8 +34,10 @@ Thumbs.db
 .env.local
 .env.*.local
 
-# Local music (large binaries) — see README, keep only what you need
-public/music/*.mp3
-public/music/*.flac
-public/music/*.ogg
-public/music/*.wav
+# Local music — МP3 лежат в репозитории, чтобы играть прямо на сайте.
+# Если треки слишком большие (лимит GitHub — 100 МБ на файл),
+# раскомментируй правила ниже и тогда файлы не будут залиты на GitHub.
+# public/music/*.mp3
+# public/music/*.flac
+# public/music/*.ogg
+# public/music/*.wav

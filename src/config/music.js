@@ -23,7 +23,7 @@ export const music = {
   spotify: {
     // Ссылка на плейлист, альбом или трек:
     //   https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6
-    playlistUrl: '',
+    playlistUrl: 'https://open.spotify.com/playlist/3a0tFyXbd9BOFyt6QClD2j',
     // Тема embed-плеера: 0 = тёмная (подходит нам), 1 = светлая
     theme: 0,
     // Показывать плейлист в развёрнутой панели плеера

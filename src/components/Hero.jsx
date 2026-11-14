@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { site } from '../config/site';
 import { scrollToSection } from '../lib/hooks';
 import Icon from './Icons';
+import Typewriter from './Typewriter';
 
 /**
  * Первая секция — About Me.
@@ -25,6 +26,7 @@ export default function Hero({ steam }) {
 
   const avatar = steam?.avatarFull || site.avatar || site.avatarFallback;
   const nextSection = site.sections[1]?.id || 'steam';
+  const isOnline = steam?.onlineState === 'online';
 
   return (
     <section id="about" className={`hero ${mounted ? 'is-ready' : ''}`}>
@@ -52,15 +54,12 @@ export default function Hero({ steam }) {
       <div className="hero-vignette" aria-hidden="true" />
 
       <div className="hero-inner container">
-        <div className={`hero-top reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '0ms' }}>
-          <span className="hero-status">
-            <span className="hero-status-dot" aria-hidden="true" />
-            {steam?.onlineState === 'online' ? 'online' : 'offline'}
-          </span>
-          <span className="hero-id">{steam?.id64 || '76561198…'}</span>
+        <div className={`hero-status reveal ${mounted ? 'is-visible' : ''} ${isOnline ? 'is-online' : ''}`} style={{ '--delay': '0ms' }}>
+          <span className="hero-status-dot" aria-hidden="true" />
+          {isOnline ? 'online' : 'offline'}
         </div>
 
-        <div className={`hero-avatar reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '90ms' }}>
+        <div className={`hero-avatar reveal-media ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '60ms' }}>
           <div className="avatar-frame">
             <div className="avatar-corner avatar-corner--tl" aria-hidden="true" />
             <div className="avatar-corner avatar-corner--tr" aria-hidden="true" />
@@ -71,9 +70,13 @@ export default function Hero({ steam }) {
           <span className="avatar-glow" aria-hidden="true" />
         </div>
 
-        <h1 className={`hero-name reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '180ms' }}>
-          {site.name}
-          <span className="hero-name-cursor" aria-hidden="true" />
+        <h1 className={`hero-name reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '120ms' }}>
+          <Typewriter
+            segments={[{ text: site.name }]}
+            speed={34}
+            start={mounted}
+            className="hero-name-text"
+          />
         </h1>
 
         <p className={`hero-tagline reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '260ms' }}>
@@ -82,11 +85,11 @@ export default function Hero({ steam }) {
           <span className="hero-tagline-mark">/&gt;</span>
         </p>
 
-        <p className={`hero-desc reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '330ms' }}>
+        <p className={`hero-desc reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '320ms' }}>
           {site.description}
         </p>
 
-        <div className={`hero-chips reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '400ms' }}>
+        <div className={`hero-chips reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '380ms' }}>
           {site.chips
             .filter((c) => c && c.value)
             .map((c) => (
@@ -98,7 +101,7 @@ export default function Hero({ steam }) {
             ))}
         </div>
 
-        <div className={`hero-links reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '470ms' }}>
+        <div className={`hero-links reveal ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '440ms' }}>
           {site.extraLinks
             .filter((l) => l && l.enabled !== false)
             .map((l) => (

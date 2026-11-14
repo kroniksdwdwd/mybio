@@ -1,120 +1,97 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { site } from '../config/site';
 import { useReveal } from '../lib/hooks';
+import { useInView } from '../lib/useInView';
 import Icon from './Icons';
-
-const STATE_LABELS = {
-  online: 'Online',
-  offline: 'Offline',
-  busy: 'Busy',
-  away: 'Away',
-  snooze: 'Snooze',
-  lookingtoplay: 'Looking to play',
-  lookingtowork: 'Looking to work',
-};
+import Typewriter from './Typewriter';
 
 /**
  * Вторая секция — Steam Profile.
- * Показывает реальные данные профиля (ник, аватар, статус, город).
+ * Показывает реальные данные: ник, аватар, статус, город, игры.
  */
 export default function SteamSection({ steam }) {
-  const ref = useReveal('.reveal');
+  const sectionRef = useReveal('.reveal');
+  const [titleRef, titleVisible] = useInView({ threshold: 0.35 });
 
   useEffect(() => {
-    ref.current?.querySelectorAll('.reveal').forEach((el, i) => {
-      el.style.setProperty('--delay', `${i * 70}ms`);
+    sectionRef.current?.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.setProperty('--delay', `${i * 90}ms`);
     });
-  }, [ref]);
+  }, [sectionRef]);
 
-  const profileUrl = steam?.profileUrl || `https://steamcommunity.com/profiles/${steam?.id64}`;
   const isOnline = steam?.onlineState === 'online';
+  const profileUrl = `https://steamcommunity.com/profiles/${steam?.id64}`;
 
   return (
-    <section id="steam" className="section steam-section" ref={ref}>
+    <section id="steam" className="steam-section" ref={sectionRef}>
       <div className="container">
-        <header className="section-head reveal">
-          <span className="section-label">02 — Steam Profile</span>
+        <div className="section-head" ref={titleRef}>
+          <span className="section-kicker reveal">02 / Steam Profile</span>
           <h2 className="section-title">
-            my <span className="accent">steam</span> page
+            <Typewriter
+              segments={[
+                { text: 'my ' },
+                { text: 'steam', accent: true },
+                { text: ' page' },
+              ]}
+              start={titleVisible}
+              speed={34}
+            />
           </h2>
-          <p className="section-sub">
-            Живые данные профиля: аватар, ник, статус в сети и история аккаунта.
+          <p className="section-sub reveal">
+            Реальные данные профиля: аватар, ник, статус в сети и игры.
           </p>
-        </header>
+        </div>
 
         <div className="steam-card reveal">
-          <div className="steam-card-glow" aria-hidden="true" />
-
-          <div className="steam-avatar-col">
+          <div className="steam-avatar-col reveal-media">
             <div className={`steam-avatar ${isOnline ? 'is-online' : ''}`}>
-              <img
-                src={steam?.avatarFull || site.steam.fallbackAvatar || site.avatarFallback}
-                alt={`Steam аватар ${steam?.name || site.name}`}
-                loading="lazy"
-              />
-              <span className="steam-avatar-status" aria-hidden="true" />
+              <img src={steam?.avatarFull || steam?.avatarIcon || site.avatarFallback} alt="" />
+              <span className="steam-avatar-dot" />
             </div>
-            <span className="steam-avatar-label">avatar</span>
+            <span className="steam-avatar-label">{steam?.vanity || 'steam'}</span>
           </div>
 
           <div className="steam-info">
-            <div className="steam-info-head">
-              <h3 className="steam-name">{steam?.name || site.name}</h3>
+            <div className="steam-name-row">
+              <h3 className="steam-name">
+                {steam?.name || 'Steam user'}
+                {isOnline && <span className="steam-online-dot" title="Online" />}
+              </h3>
               <span className={`steam-status ${isOnline ? 'is-online' : 'is-offline'}`}>
-                <span className="steam-status-dot" aria-hidden="true" />
-                {STATE_LABELS[steam?.onlineState] || 'Offline'}
+                {isOnline ? 'online' : 'offline'}
               </span>
             </div>
 
-            {steam?.realname && <p className="steam-realname">real name: {steam.realname}</p>}
+            {steam?.realname && <p className="steam-realname">{steam.realname}</p>}
 
             <div className="steam-meta">
-              {steam?.memberSince && (
-                <div className="steam-meta-item">
-                  <Icon name="signal" size={13} />
-                  <span className="steam-meta-label">member since</span>
-                  <span className="steam-meta-value">{steam.memberSince}</span>
-                </div>
-              )}
-              {steam?.location && (
-                <div className="steam-meta-item">
-                  <Icon name="globe" size={13} />
-                  <span className="steam-meta-label">location</span>
-                  <span className="steam-meta-value">{steam.location}</span>
-                </div>
-              )}
-              {steam?.vanity && (
-                <div className="steam-meta-item">
-                  <Icon name="code" size={13} />
-                  <span className="steam-meta-label">vanity url</span>
-                  <span className="steam-meta-value">{steam.vanity}</span>
-                </div>
-              )}
+              <div className="steam-meta-item">
+                <span className="steam-meta-label">Member since</span>
+                <span className="steam-meta-value">{steam?.memberSince || '—'}</span>
+              </div>
+              <div className="steam-meta-item">
+                <span className="steam-meta-label">Location</span>
+                <span className="steam-meta-value">{steam?.location || '—'}</span>
+              </div>
+              <div className="steam-meta-item">
+                <span className="steam-meta-label">Games</span>
+                <span className="steam-meta-value">{steam?.games?.length || 0} tracked</span>
+              </div>
             </div>
 
-            {steam?.games?.length > 0 && (
-              <div className="steam-games">
-                <span className="steam-games-label">most played</span>
-                <div className="steam-games-list">
-                  {steam.games.map((g) => (
-                    <span className="steam-game" key={g}>
-                      {g}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="steam-games">
+              {steam?.games?.slice(0, 6).map((g) => (
+                <span className="steam-game" key={g}>
+                  {g}
+                </span>
+              ))}
+            </div>
 
             <div className="steam-actions">
-              <a
-                className="btn btn-primary"
-                href={profileUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                <Icon name="steam" size={16} />
+              <a className="btn btn-primary" href={profileUrl} target="_blank" rel="noreferrer noopener">
                 View profile
-                <Icon name="external" size={14} className="btn-ext" />
+                <Icon name="external" size={14} />
               </a>
               <a
                 className="btn btn-ghost"
@@ -122,7 +99,6 @@ export default function SteamSection({ steam }) {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                <Icon name="link" size={15} />
                 Add friend
               </a>
             </div>

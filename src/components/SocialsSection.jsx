@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { socials } from '../config/socials';
 import { useReveal } from '../lib/hooks';
+import { useInView } from '../lib/useInView';
 import Icon from './Icons';
+import Typewriter from './Typewriter';
 
 /**
  * Третья секция — Socials.
@@ -9,39 +11,52 @@ import Icon from './Icons';
  * любая новая запись с enabled: true появляется автоматически.
  */
 export default function SocialsSection() {
-  const ref = useReveal('.reveal');
+  const sectionRef = useReveal('.reveal');
+  const [titleRef, titleVisible] = useInView({ threshold: 0.35 });
 
   const list = [...socials]
     .filter((s) => s && s.enabled !== false)
     .sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
 
   useEffect(() => {
-    ref.current?.querySelectorAll('.reveal').forEach((el, i) => {
-      el.style.setProperty('--delay', `${i * 60}ms`);
+    sectionRef.current?.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.setProperty('--delay', `${i * 70}ms`);
     });
-  }, [ref]);
+  }, [sectionRef]);
 
   return (
-    <section id="socials" className="section socials-section" ref={ref}>
+    <section id="socials" className="socials-section" ref={sectionRef}>
       <div className="container">
-        <header className="section-head reveal">
-          <span className="section-label">03 — Socials</span>
+        <div className="section-head" ref={titleRef}>
+          <span className="section-kicker reveal">03 / Socials</span>
           <h2 className="section-title">
-            find me <span className="accent">around</span> the web
+            <Typewriter
+              segments={[
+                { text: 'find me ' },
+                { text: 'around', accent: true },
+                { text: ' the web' },
+              ]}
+              start={titleVisible}
+              speed={34}
+            />
           </h2>
-          <p className="section-sub">
-            Все мои площадки в одном месте. Ссылки добавляются через
-            <code>src/config/socials.js</code>.
+          <p className="section-sub reveal">
+            Все мои площадки в одном месте. Список берётся из{' '}
+            <code>src/config/socials.js</code> — добавь запись с <code>enabled: true</code>, и
+            карточка появится сама.
           </p>
-        </header>
+        </div>
 
         {list.length === 0 ? (
-          <div className="empty-state reveal">
-            <Icon name="link" size={22} />
-            <p>
-              Ссылки пока не добавлены. Открой <code>src/config/socials.js</code> и поставь
-              <code> enabled: true</code> нужным площадкам.
-            </p>
+          <div className="socials-empty reveal">
+            <Icon name="link" size={18} />
+            <div>
+              <strong>Пока нет ссылок</strong>
+              <p>
+                Открой <code>src/config/socials.js</code> и включи нужные площадки — карточки
+                появятся здесь автоматически.
+              </p>
+            </div>
           </div>
         ) : (
           <div className="socials-grid">
@@ -53,20 +68,17 @@ export default function SocialsSection() {
                 target="_blank"
                 rel="noreferrer noopener"
               >
-                <span className="social-icon">
-                  <Icon name={s.icon} size={22} />
+                <span className="social-icon reveal-media">
+                  <Icon name={s.icon} size={20} />
                 </span>
-                <span className="social-body">
+                <span className="social-text">
                   <span className="social-name">{s.name}</span>
                   <span className="social-username">
                     {s.username || s.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                   </span>
                   {s.discordId && <span className="social-extra">ID: {s.discordId}</span>}
                 </span>
-                <span className="social-arrow" aria-hidden="true">
-                  <Icon name="external" size={15} />
-                </span>
-                <span className="social-sheen" aria-hidden="true" />
+                <Icon name="external" size={15} className="social-arrow" />
               </a>
             ))}
           </div>

@@ -3,29 +3,36 @@
  *  LOCAL PLAYLIST — свои MP3-файлы
  * ============================================================
  *
- *  1. Положи MP3-файлы в папку  public/music/
- *  2. Добавь сюда запись для каждого трека:
- *
- *      {
- *        title: 'Название',
- *        artist: 'Исполнитель',
- *        src: '/music/song1.mp3',                 // путь к файлу
- *        cover: '/music/covers/song1.jpg',       // НЕОБЯЗАТЕЛЬНО
- *      }
- *
- *  Если обложки нет — используется красивая пиксельная заглушка.
- *  Чтобы пути работали на GitHub Pages (base './'), файлы
- *  достаются по абсолютному пути от корня сайта.
+ *  Сгенерировано автоматически: node scripts/build-playlist.mjs
+ *  Файлы лежат в public/music/, обложки — в public/music/covers/
  * ============================================================
  */
 
 export const localPlaylist = [
-  // {
-  //   title: 'Nightdrive',
-  //   artist: 'Neon',
-  //   src: '/music/nightdrive.mp3',
-  //   cover: '/music/covers/nightdrive.jpg',
-  // },
+  {
+    title: 'fading into blue',
+    artist: 'Shuta Yasukochi',
+    src: '/music/fading into blue.mp3',
+    cover: '/music/covers/fading into blue.jpg',
+  },
+  {
+    title: 'four walls',
+    artist: 'fragmnts',
+    src: '/music/four walls.mp3',
+    cover: '/music/covers/four walls.jpg',
+  },
+  {
+    title: 'Porcelain II',
+    artist: 'Lentia',
+    src: '/music/Porcelain II.mp3',
+    cover: '/music/covers/Porcelain II.jpg',
+  },
+  {
+    title: 'still waiting',
+    artist: 'soluneia',
+    src: '/music/still waiting.mp3',
+    cover: '/music/covers/still waiting.jpg',
+  },
 ];
 
 export default localPlaylist;

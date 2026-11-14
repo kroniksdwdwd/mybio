@@ -51,8 +51,10 @@ export default function MusicPlayer() {
   const initialMode = useMemo(() => {
     if (music.mode === 'local') return 'local';
     if (music.mode === 'spotify') return 'spotify';
-    return spotifyInfo ? 'spotify' : 'local';
-  }, [music.mode, spotifyInfo]);
+    // auto: если есть свои MP3 — играем их (полное управление),
+    // иначе пробуем Spotify
+    return hasLocal ? 'local' : spotifyInfo ? 'spotify' : 'local';
+  }, [music.mode, spotifyInfo, hasLocal]);
 
   const [mode, setMode] = useState(() => {
     const saved = localStorage.getItem(MODE_KEY);
@@ -65,7 +67,7 @@ export default function MusicPlayer() {
   });
 
   /* ── Локальные треки ────────────────────────────────────── */
-  const [tracks, setTracks] = useState(localPlaylist);
+  const [tracks] = useState(localPlaylist);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
@@ -158,22 +160,18 @@ export default function MusicPlayer() {
       audio.volume = volume;
       const p = audio.play();
       if (p && typeof p.catch === 'function') {
-        p.catch(() => {
-          setNotice('Браузер заблокировал автозапуск — нажми ещё раз');
-        });
+        p.catch(() => setNotice('Браузер заблокировал автозапуск — нажми ещё раз'));
       }
       setPlaying(true);
     } else {
-      // Spotify: управление внутри встроенного плеера
+      // Spotify: официальный плеер внутри панели
       setExpanded(true);
       setPlaying((v) => !v);
     }
   }, [mode, track, volume]);
 
   const pause = useCallback(() => {
-    if (mode === 'local') {
-      audioRef.current?.pause();
-    }
+    if (mode === 'local') audioRef.current?.pause();
     setPlaying(false);
   }, [mode]);
 
@@ -196,7 +194,7 @@ export default function MusicPlayer() {
     setIndex((i) => (i - 1 + tracks.length) % tracks.length);
   }, [mode, tracks.length]);
 
-  /* Реагируем на клавиатуру (пробел не мешает ввод�� в текстовых полях) */
+  /* Клавиатура: Space — play/pause, Shift+стрелки — переключение */
   useEffect(() => {
     const onKey = (e) => {
       const tag = document.activeElement?.tagName;
@@ -214,10 +212,10 @@ export default function MusicPlayer() {
     return () => window.removeEventListener('keydown', onKey);
   });
 
-  /* ── Перетаскивание ─────────────────────────────────────── */
+  /* ── Перетаскивание (только за шапку: картинка + название) ── */
   const onPointerDown = (e) => {
     if (e.button != null && e.button !== 0) return;
-    if (e.target.closest('button, a, input, .player-progress, .player-volume-panel')) return;
+    if (!e.target.closest('.player-head')) return;
     const el = rootRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -260,18 +258,18 @@ export default function MusicPlayer() {
     dragRef.current = null;
   };
 
-  /* Клик по свободному месту панели (не по кнопкам) — раскрыть/свернуть */
-  const onBarClick = (e) => {
-    if (e.target.closest('button, a, input, .player-panel, .player-progress, .player-volume-panel')) return;
+  /* Клик по шапке — раскрыть/свернуть панель */
+  const onHeadClick = (e) => {
+    if (e.target.closest('button, a, input')) return;
     setExpanded((v) => !v);
   };
 
-  /* ── Громкость (наведение на десктопе, тап на мобильных) ── */
+  /* ── Громкость (hover на десктопе, тап на мобильных) ────── */
   const [isTouch] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
   );
 
-  /* ── Держим плеер в пределах экрана при ресайзе ─────────── */
+  /* ── Позиция не должна уезжать за экран ─────────────────── */
   useEffect(() => {
     const clamp = () => {
       const el = rootRef.current;
@@ -289,7 +287,6 @@ export default function MusicPlayer() {
     return () => window.removeEventListener('resize', clamp);
   }, []);
 
-  /* ── Прочее ──────────────────────────────────────────────── */
   const switchMode = (nextMode) => {
     if (nextMode === 'spotify' && !spotifyInfo) return;
     if (nextMode === 'local' && !hasLocal) {
@@ -304,8 +301,7 @@ export default function MusicPlayer() {
   const progress = duration > 0 ? (time / duration) * 100 : 0;
 
   const title = mode === 'spotify' ? meta?.title || 'Spotify Playlist' : track?.title || 'No track';
-  const artist =
-    mode === 'spotify' ? meta?.author || 'Spotify' : track?.artist || 'local playlist';
+  const artist = mode === 'spotify' ? meta?.author || 'Spotify' : track?.artist || 'local playlist';
   const cover = mode === 'spotify' ? meta?.cover || '' : track?.cover || '';
 
   return (
@@ -320,9 +316,7 @@ export default function MusicPlayer() {
             audioRef.current.play();
           } else next();
         }}
-        onError={() => {
-          setPlaying(false);
-        }}
+        onError={() => setPlaying(false)}
         preload="none"
       />
 
@@ -336,7 +330,6 @@ export default function MusicPlayer() {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        onClick={onBarClick}
         role="region"
         aria-label="Музыкальный плеер"
       >
@@ -361,16 +354,36 @@ export default function MusicPlayer() {
           />
         </div>
 
-        {/* Компактная строка */}
+        {/* Шапка: картинка + название (за неё можно тянуть) */}
+        <div className="player-head" onClick={onHeadClick}>
+          <div className={`player-cover ${cover ? '' : 'is-placeholder'}`}>
+            {cover ? (
+              <img src={cover} alt="" />
+            ) : (
+              <span className="player-cover-pixel" aria-hidden="true" />
+            )}
+          </div>
+
+          <div className="player-meta">
+            <span className="player-title">{title}</span>
+            <span className="player-artist">{artist}</span>
+          </div>
+
+          <span className="player-grip" aria-hidden="true">
+            <Icon name="music" size={13} />
+          </span>
+        </div>
+
+        {/* Управление */}
         <div className="player-bar">
           <button
-            className="player-btn player-btn--ghost"
+            className="player-btn"
             onClick={prev}
             disabled={mode === 'spotify'}
             aria-label="Предыдущий трек"
-            title={mode === 'spotify' ? 'В режиме Spotify доступно в панели плеера' : 'Предыдущий трек'}
+            title={mode === 'spotify' ? 'Доступно в панели Spotify' : 'Предыдущий трек'}
           >
-            <Icon name="prev" size={16} />
+            <Icon name="prev" size={15} />
           </button>
 
           <button
@@ -384,31 +397,48 @@ export default function MusicPlayer() {
               <i />
               <i />
             </span>
-            <Icon name={playing ? 'pause' : 'play'} size={17} className="player-btn-glyph" />
+            <Icon name={playing ? 'pause' : 'play'} size={16} className="player-btn-glyph" />
           </button>
 
           <button
-            className="player-btn player-btn--ghost"
+            className="player-btn"
             onClick={next}
             disabled={mode === 'spotify'}
             aria-label="Следующий трек"
-            title={mode === 'spotify' ? 'В режиме Spotify доступно в панели плеера' : 'Следующий трек'}
+            title={mode === 'spotify' ? 'Доступно в панели Spotify' : 'Следующий трек'}
           >
-            <Icon name="next" size={16} />
+            <Icon name="next" size={15} />
           </button>
 
-          <div className="player-sep" aria-hidden="true" />
+          <span className="player-sep" aria-hidden="true" />
 
           <button
-            className={`player-btn player-btn--ghost player-volume-trigger ${
-              volumeOpen ? 'is-visible' : ''
-            }`}
+            className={`player-btn ${shuffle ? 'is-on' : ''}`}
+            onClick={() => setShuffle((v) => !v)}
+            aria-label="Перемешать"
+            title="Перемешать"
+            disabled={mode === 'spotify'}
+          >
+            <Icon name="shuffle" size={14} />
+          </button>
+          <button
+            className={`player-btn ${repeat ? 'is-on' : ''}`}
+            onClick={() => setRepeat((v) => !v)}
+            aria-label="Повтор"
+            title="Повтор"
+            disabled={mode === 'spotify'}
+          >
+            <Icon name="repeat" size={14} />
+          </button>
+
+          <button
+            className="player-btn player-volume-trigger"
             onClick={() => (isTouch ? setVolumeOpen((v) => !v) : setVolumeOpen(true))}
             onMouseEnter={() => !isTouch && setVolumeOpen(true)}
             aria-label="Громкость"
             title="Громкость"
           >
-            <Icon name={volume === 0 ? 'volumeMute' : 'volume'} size={16} />
+            <Icon name={volume === 0 ? 'volumeMute' : 'volume'} size={15} />
           </button>
 
           <div
@@ -432,86 +462,52 @@ export default function MusicPlayer() {
 
         {/* Расширенная панель */}
         <div className="player-panel">
-          <div className="player-track">
-            <div className={`player-cover ${cover ? '' : 'is-placeholder'}`}>
-              {cover ? <img src={cover} alt="" /> : <span className="player-cover-pixel" aria-hidden="true" />}
-              <button
-                className="player-cover-toggle"
-                onClick={() => setExpanded((v) => !v)}
-                aria-label={expanded ? 'Свернуть плеер' : 'Развернуть плеер'}
-              >
-                <Icon name={expanded ? 'chevron' : 'music'} size={13} />
-              </button>
-            </div>
-
-            <div className="player-meta">
-              <span className="player-title">{title}</span>
-              <span className="player-artist">{artist}</span>
-            </div>
-
-            <div className="player-extra">
-              <button
-                className={`player-chip ${shuffle ? 'is-on' : ''}`}
-                onClick={() => setShuffle((v) => !v)}
-                aria-label="Перемешать"
-                title="Перемешать"
-                disabled={mode === 'spotify'}
-              >
-                <Icon name="shuffle" size={14} />
-              </button>
-              <button
-                className={`player-chip ${repeat ? 'is-on' : ''}`}
-                onClick={() => setRepeat((v) => !v)}
-                aria-label="Повтор"
-                title="Повтор"
-                disabled={mode === 'spotify'}
-              >
-                <Icon name="repeat" size={14} />
-              </button>
-              <button
-                className="player-chip"
-                onClick={() => switchMode(mode === 'local' ? 'spotify' : 'local')}
-                aria-label="Переключить источник"
-                title="Переключить источник: Spotify / локальные файлы"
-                disabled={!spotifyInfo && !hasLocal}
-              >
-                <Icon name="spotifyGlyph" size={14} />
-              </button>
-            </div>
-          </div>
-
           <div className="player-times">
             <span>{mode === 'local' ? formatTime(time) : '—'}</span>
             <span>{mode === 'local' ? formatTime(duration) : 'live'}</span>
           </div>
 
-          {notice && (
-            <p className="player-notice" role="status">
-              {notice}
-            </p>
-          )}
-
-          {mode === 'spotify' && embedUrl && music.spotify.showInPanel && (
-            <div className="player-embed">
-              <iframe
-                title="Spotify player"
-                src={embedUrl}
-                width="100%"
-                height="152"
-                frameBorder="0"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-              />
-            </div>
-          )}
-
-          {mode === 'local' && !hasLocal && (
-            <p className="player-notice">
-              Пока нет локальных треков. Добавь MP3 в <code>public/music/</code> и опиши их в{' '}
-              <code>src/data/localPlaylist.js</code>.
-            </p>
-          )}
+          <button
+            className="player-btn"
+            onClick={() => switchMode(mode === 'local' ? 'spotify' : 'local')}
+            aria-label="Переключить источник"
+            title="Переключить источник: Spotify / локальные файлы"
+            disabled={!spotifyInfo && !hasLocal}
+          >
+            <Icon name="spotifyGlyph" size={14} />
+          </button>
         </div>
+
+        {expanded && (
+          <div className="player-panel">
+            {notice && (
+              <p className="player-notice" role="status">
+                {notice}
+              </p>
+            )}
+
+            {mode === 'spotify' && embedUrl && music.spotify.showInPanel && (
+              <div className="player-embed">
+                <iframe
+                  title="Spotify player"
+                  src={embedUrl}
+                  width="100%"
+                  height="152"
+                  frameBorder="0"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                />
+              </div>
+            )}
+
+            {mode === 'local' && !hasLocal && (
+              <p className="player-notice">
+                Пока нет локальных треков. Добавь MP3 в <code>public/music/</code> и опиши их в{' '}
+                <code>src/data/localPlaylist.js</code>.
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

@@ -16,21 +16,21 @@
  *
  *  ДОСТУПНЫЕ ИКОНКИ (icon):
  *    twitch, discord, youtube, spotify, soundcloud,
- *    telegram, twitter, vk, github, instagram, tiktok,
- *    reddit, telegram, steam, mail, link, code, gamepad
+ *    telegram, twitter/x, vk, github, instagram, tiktok,
+ *    reddit, steam, mail, link, code, gamepad, globe, signal
  *
- *  Если указать нестандартную иконку (например 'mylogo'),
- *  будет показана универсальная иконка-ссылка.
+ *  Если указать нестандартную иконку — будет показана
+ *  универсальная иконка-ссылка.
  * ============================================================
  */
 
 export const socials = [
   {
     name: 'Twitch',
-    url: 'https://twitch.tv/',
-    username: '',
+    url: 'https://www.twitch.tv/3erdool',
+    username: '3erdool',
     icon: 'twitch',
-    enabled: false,
+    enabled: true,
     order: 10,
   },
   {
@@ -43,27 +43,43 @@ export const socials = [
   },
   {
     name: 'YouTube',
-    url: 'https://youtube.com/',
-    username: '',
+    url: 'https://www.youtube.com/channel/UCYkOF1bdvgKfIn49u6dfseA',
+    username: 'игровой канал',
     icon: 'youtube',
-    enabled: false,
+    enabled: true,
     order: 30,
   },
   {
+    name: 'YouTube',
+    url: 'https://www.youtube.com/@DrTiime',
+    username: 'туториалы и гайды',
+    icon: 'youtube',
+    enabled: true,
+    order: 31,
+  },
+  {
     name: 'Spotify',
-    url: 'https://open.spotify.com/',
-    username: '',
+    url: 'https://open.spotify.com/user/31jtcvlp5l6wrmy6cththkowwkfa',
+    username: 'hilkach',
     icon: 'spotify',
-    enabled: false,
+    enabled: true,
     order: 40,
   },
   {
     name: 'SoundCloud',
-    url: 'https://soundcloud.com/',
-    username: '',
+    url: 'https://soundcloud.com/hilkach',
+    username: 'hilkach',
     icon: 'soundcloud',
-    enabled: false,
+    enabled: true,
     order: 50,
+  },
+  {
+    name: 'GitHub',
+    url: 'https://github.com/kroniksdwdwd',
+    username: 'kroniksdwdwd',
+    icon: 'github',
+    enabled: true,
+    order: 60,
   },
 ];
 

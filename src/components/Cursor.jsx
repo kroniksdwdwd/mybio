@@ -4,7 +4,10 @@ import { useEffect, useRef } from 'react';
  * Кастомный курсор:
  *  — точка и кольцо двигаются на 60 fps через requestAnimationFrame;
  *  — точка сглаживается мгновенно-плавно, кольцо отстаёт;
- *  — за указателем остаются синие точки на фоне (висят 5 секунд).
+ *  — за указателем остаются синие точки на фоне (живут 5 секунд).
+ *
+ *  Время жизни точек считается в JS, поэтому эффект работает
+ *  даже если в системе отключены анимации.
  */
 export default function Cursor() {
   const dot = useRef(null);
@@ -29,22 +32,28 @@ export default function Cursor() {
       lastSpawnAt: 0,
     };
 
+    const LIFE = 5000; // сколько живёт точка, мс
+    const FADE_IN = 140;
+    const FADE_OUT = 900;
+    const TRAIL_MAX = 80;
+
+    const dots = [];
     let raf = 0;
-    const TRAIL_MAX = 70;
 
     const spawnTrail = (x, y) => {
-      const container = document.querySelector('.cursor-trail');
-      window.__hasContainer = !!container;
+      const container = trail.current;
       if (!container) return;
-      while (container.childElementCount > TRAIL_MAX) {
-        container.firstElementChild?.remove();
-      }
       const el = document.createElement('span');
       el.className = 'cursor-trail-dot';
       el.style.left = `${x}px`;
       el.style.top = `${y}px`;
+      el.style.opacity = '0';
       container.appendChild(el);
-      el.addEventListener('animationend', () => el.remove());
+      dots.push({ el, born: performance.now() });
+      while (dots.length > TRAIL_MAX) {
+        const old = dots.shift();
+        old.el.remove();
+      }
     };
 
     const move = (x, y) => {
@@ -57,7 +66,7 @@ export default function Cursor() {
       // Точки на фоне — по пути указателя
       const now = performance.now();
       const distance = Math.hypot(x - state.lastSpawnX, y - state.lastSpawnY);
-      if (distance > 10 && now - state.lastSpawnAt > 40) {
+      if (distance > 8 && now - state.lastSpawnAt > 35) {
         state.lastSpawnAt = now;
         state.lastSpawnX = x;
         state.lastSpawnY = y;
@@ -75,13 +84,40 @@ export default function Cursor() {
 
       if (dot.current) {
         dot.current.style.transform = `translate3d(${state.dx.toFixed(2)}px, ${state.dy.toFixed(
-        2
-      )}px, 0)`;
+          2
+        )}px, 0)`;
       }
       if (ring.current) {
         ring.current.style.transform = `translate3d(${state.rx.toFixed(2)}px, ${state.ry.toFixed(
           2
         )}px, 0)`;
+      }
+
+      // Жизненный цикл точек на фоне (fade in → hold → fade out)
+      const now = performance.now();
+      for (let i = dots.length - 1; i >= 0; i -= 1) {
+        const d = dots[i];
+        const age = now - d.born;
+
+        if (age >= LIFE) {
+          d.el.remove();
+          dots.splice(i, 1);
+          continue;
+        }
+
+        let opacity = 0.85;
+        let scale = 1;
+        if (age < FADE_IN) {
+          opacity = (0.85 * age) / FADE_IN;
+          scale = 0.4 + (0.6 * age) / FADE_IN;
+        } else if (age > LIFE - FADE_OUT) {
+          const k = (LIFE - age) / FADE_OUT;
+          opacity = 0.85 * k;
+          scale = 0.35 + 0.65 * k;
+        }
+
+        d.el.style.opacity = opacity.toFixed(3);
+        d.el.style.transform = `scale(${scale.toFixed(3)})`;
       }
 
       raf = requestAnimationFrame(loop);
@@ -122,6 +158,7 @@ export default function Cursor() {
       document.removeEventListener('mouseleave', onLeave);
       document.removeEventListener('mouseenter', onEnter);
       if (raf) cancelAnimationFrame(raf);
+      dots.forEach((d) => d.el.remove());
     };
   }, []);
 

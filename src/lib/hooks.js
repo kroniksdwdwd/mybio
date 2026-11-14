@@ -5,7 +5,7 @@ import smoothScroll from './smoothScroll';
  * Добавляет класс `is-visible` элементам с классом `.reveal`,
  * когда они попадают в область видимости.
  */
-export function useReveal(selector = '.reveal', deps = []) {
+export function useReveal(selector = '.reveal, .reveal-media', deps = []) {
   const ref = useRef(null);
 
   useEffect(() => {

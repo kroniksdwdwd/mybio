@@ -61,6 +61,13 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Когда работает наша инерционная прокрутка, нативный smooth-scroll
+   мешает (каждый кадр запускает свою анимацию) — отключаем его */
+html.smooth-scroll,
+html.smooth-scroll * {
+  scroll-behavior: auto !important;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -202,6 +209,45 @@ iframe {
   transform: none;
 }
 
+/* Картинки, рамки и прочие «не текстовые» элементы:
+   полупрозрачные и чуть меньше, а при появлении плавно
+   увеличиваются до нормы и смещаются вверх (как в приложении) */
+.reveal-media {
+  opacity: 0.45;
+  transform: translateY(24px) scale(0.93);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+  transition-delay: var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal-media.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Мигающий курсор у печатающегося текста ─────────────────── */
+.type-cursor {
+  display: inline-block;
+  width: 0.12em;
+  min-width: 2px;
+  height: 0.92em;
+  margin-left: 0.06em;
+  vertical-align: text-bottom;
+  background: var(--accent);
+  opacity: 0.85;
+  box-shadow: 0 0 12px rgba(122, 162, 247, 0.55);
+  animation: typeBlink 1.05s steps(1) infinite;
+}
+@keyframes typeBlink {
+  0%,
+  49% {
+    opacity: 0.85;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -271,33 +317,12 @@ iframe {
   }
   .cursor-trail-dot {
     position: absolute;
-    width: 5px;
-    height: 5px;
-    margin: -2.5px 0 0 -2.5px;
+    width: 6px;
+    height: 6px;
+    margin: -3px 0 0 -3px;
     border-radius: 1px;
     background: var(--accent);
-    box-shadow: 0 0 8px rgba(122, 162, 247, 0.75);
-    animation-name: trailFade;
-    animation-duration: 5s;
-    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    animation-fill-mode: forwards;
-  }
-  @keyframes trailFade {
-    0% {
-      opacity: 0;
-      transform: scale(0.3);
-    }
-    5% {
-      opacity: 0.85;
-      transform: scale(1);
-    }
-    82% {
-      opacity: 0.85;
-      transform: scale(1);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(0.35);
-    }
+    box-shadow: 0 0 10px rgba(122, 162, 247, 0.85);
+    will-change: opacity, transform;
   }
 }
