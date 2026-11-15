@@ -97,10 +97,10 @@ async function fetchAchievements(userId, appId) {
     if (!res.ok) return { achieved: 0, total: 0 };
     const text = await res.text();
     if (!text || text.length < 40) return { achieved: 0, total: 0 };
-    const num = (tag) =>
-      Number(text.match(new RegExp(`<${tag}>(.*?)</${tag}>`))?.[1]) || 0;
-    const total = num('globalAchievementCount');
-    const achieved = num('achievementCount');
+    // Steam отдаёт список ачивок: closed="1" — получено, closed="0" — нет
+    const all = [...text.matchAll(/<achievement\s+closed="(\d)"/g)];
+    const total = all.length;
+    const achieved = all.filter((m) => m[1] === '1').length;
     return { achieved, total };
   } catch {
     return { achieved: 0, total: 0 };

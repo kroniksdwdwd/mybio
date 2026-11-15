@@ -47,8 +47,8 @@
       "hoursTotal": 97,
       "cover": "https://media.steampowered.com/steam/apps/3478870/library_hero.jpg",
       "achievements": {
-        "achieved": 0,
-        "total": 0
+        "achieved": 13,
+        "total": 45
       }
     },
     {
@@ -60,8 +60,8 @@
       "hoursTotal": 32,
       "cover": "https://media.steampowered.com/steam/apps/227300/library_600x900.jpg",
       "achievements": {
-        "achieved": 0,
-        "total": 0
+        "achieved": 6,
+        "total": 114
       }
     },
     {
@@ -87,9 +87,9 @@
       "cover": "https://media.steampowered.com/steam/apps/1449690/library_600x900.jpg",
       "achievements": {
         "achieved": 0,
-        "total": 0
+        "total": 23
       }
     }
   ],
-  "updatedAt": "2026-11-15T14:12:43.130Z"
+  "updatedAt": "2026-11-15T14:18:01.948Z"
 }
