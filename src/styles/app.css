@@ -216,6 +216,18 @@
   pointer-events: none;
 }
 
+/* Видео плавно уходит вниз — мягкий переход к следующей секции */
+.hero-video-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34%;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(11, 13, 18, 0) 0%, rgba(11, 13, 18, 0.55) 45%, var(--bg) 100%);
+}
+
 .hero-inner {
   display: flex;
   flex-direction: column;
@@ -723,19 +735,124 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Игры — вертикальные плитки (как иконки игр на телефоне) */
 .steam-games {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 12px;
+  margin-bottom: 26px;
+  max-width: 640px;
 }
-.steam-game {
-  padding: 5px 11px;
+.game-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.game-tile-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--panel-2);
   border: 1px solid var(--border-soft);
-  border-radius: 6px;
-  background: rgba(122, 162, 247, 0.07);
+  transition: transform 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.game-tile-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.game-tile-fallback {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(122, 162, 247, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122, 162, 247, 0.14) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+.game-tile-name {
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.game-tile:hover .game-tile-cover {
+  transform: translateY(-3px) scale(1.03);
+  border-color: var(--accent-line);
+}
+
+/* Карточка с часами — появляется при наведении */
+.game-card {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 5;
+  width: 218px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: rgba(20, 24, 34, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 8px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease), visibility 0.25s;
+  pointer-events: none;
+}
+.game-tile:hover .game-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+.game-card-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 9px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.game-card-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.game-card-row svg {
+  color: var(--accent);
+  flex: none;
+}
+.game-card-label {
+  color: var(--muted-2);
+}
+.game-card-value {
+  margin-left: auto;
   color: var(--text-dim);
+  font-weight: 600;
+}
+.game-card-bar {
+  height: 3px;
+  margin-top: 9px;
+  border-radius: 3px;
+  background: var(--border-strong);
+  overflow: hidden;
+}
+.game-card-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.4s var(--ease);
 }
 .steam-actions {
   display: flex;

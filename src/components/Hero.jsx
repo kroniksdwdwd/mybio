@@ -54,19 +54,10 @@ export default function Hero({ steam, steamChecking }) {
         aria-hidden="true"
       />
       <div className="hero-grid" aria-hidden="true" />
+      <div className="hero-video-fade" aria-hidden="true" />
       <div className="hero-vignette" aria-hidden="true" />
 
       <div className="hero-inner container">
-        <div
-          className={`hero-status reveal ${mounted ? 'is-visible' : ''} ${
-            steamChecking ? 'is-checking' : isOnline ? 'is-online' : ''
-          }`}
-          style={{ '--delay': '0ms' }}
-        >
-          <span className="hero-status-dot" aria-hidden="true" />
-          {steamChecking ? 'проверяю статус' : isOnline ? 'online' : 'offline'}
-        </div>
-
         <div className={`hero-avatar reveal-media ${mounted ? 'is-visible' : ''}`} style={{ '--delay': '60ms' }}>
           <div className="avatar-frame">
             <div className="avatar-corner avatar-corner--tl" aria-hidden="true" />

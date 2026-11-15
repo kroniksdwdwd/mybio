@@ -53,15 +53,7 @@ export default function SteamSection({ steam, steamChecking }) {
             <div className="steam-name-row">
               <h3 className="steam-name">
                 {steam?.name || 'Steam user'}
-                {isOnline && <span className="steam-online-dot" title="Online" />}
               </h3>
-              <span
-                className={`steam-status ${
-                  steamChecking ? 'is-checking' : isOnline ? 'is-online' : 'is-offline'
-                }`}
-              >
-                {steamChecking ? 'проверяю…' : isOnline ? 'online' : 'offline'}
-              </span>
             </div>
 
             {steam?.realname && <p className="steam-realname">{steam.realname}</p>}
@@ -82,10 +74,58 @@ export default function SteamSection({ steam, steamChecking }) {
             </div>
 
             <div className="steam-games">
-              {steam?.games?.slice(0, 6).map((g) => (
-                <span className="steam-game" key={g}>
-                  {g}
-                </span>
+              {steam?.games?.slice(0, 6).map((game) => (
+                <div className="game-tile" key={game.name}>
+                  <div className="game-tile-cover">
+                    {game.icon || game.logo ? (
+                      <img src={game.icon || game.logo} alt={game.name} loading="lazy" />
+                    ) : (
+                      <span className="game-tile-fallback" aria-hidden="true" />
+                    )}
+                  </div>
+                  <span className="game-tile-name">{game.name}</span>
+
+                  {/* Карточка с часами и ачивками — появляется при наведении */}
+                  <div className="game-card">
+                    <span className="game-card-title">{game.name}</span>
+
+                    <div className="game-card-row">
+                      <Icon name="signal" size={13} />
+                      <span className="game-card-label">Всего часов</span>
+                      <span className="game-card-value">{Math.round(game.hoursTotal || 0)} ч</span>
+                    </div>
+
+                    <div className="game-card-row">
+                      <Icon name="code" size={13} />
+                      <span className="game-card-label">За 2 недели</span>
+                      <span className="game-card-value">{game.hours2wk || 0} ч</span>
+                    </div>
+
+                    {game.achievements?.total > 0 && (
+                      <div className="game-card-row">
+                        <Icon name="check" size={13} />
+                        <span className="game-card-label">Ачивок</span>
+                        <span className="game-card-value">
+                          {game.achievements.achieved} / {game.achievements.total}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="game-card-bar">
+                      <span
+                        style={{
+                          width: `${
+                            game.achievements?.total
+                              ? Math.round(
+                                  (game.achievements.achieved / game.achievements.total) * 100
+                                )
+                              : 0
+                          }%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
 

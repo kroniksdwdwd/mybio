@@ -23,10 +23,7 @@ export const site = {
   avatarFallback: '/media/avatar-placeholder.svg',
 
   // ── Локация / статус (маленькие чипы под описанием) ────────
-  chips: [
-    { id: 'location', label: 'Location', value: 'Europe', icon: 'globe' },
-    { id: 'music', label: 'Now', value: 'Music on', icon: 'music' },
-  ],
+  chips: [{ id: 'location', label: 'Location', value: 'Asia', icon: 'globe' }],
 
   // ── Steam ──────────────────────────────────────────────────
   steam: {

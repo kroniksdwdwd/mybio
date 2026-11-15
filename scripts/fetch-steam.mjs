@@ -40,11 +40,57 @@ const readAll = (tag) =>
     m[1].trim()
   );
 
+/** Игры: иконка, обложка, часы */
+function readGames() {
+  const block = xml.match(/<mostPlayedGames>([\s\S]*?)<\/mostPlayedGames>/)?.[1] || '';
+  const games = [];
+  for (const g of block.split('<mostPlayedGame>').slice(1)) {
+    const pick = (tag) =>
+      g.match(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?</${tag}>`))?.[1]?.trim() || '';
+    const link = pick('gameLink');
+    games.push({
+      name: pick('gameName'),
+      appId: (link.match(/app\/(\d+)/) || [])[1] || '',
+      icon: pick('gameIcon'),
+      logo: pick('gameLogo'),
+      hours2wk: Number(pick('hoursPlayed')) || 0,
+      hoursTotal: Number(pick('hoursOnRecord')) || 0,
+    });
+  }
+  return games.slice(0, 6);
+}
+
+/** Сколько ачивок выполнено (видно, только если статистика игры открыта) */
+async function fetchAchievements(userId, appId) {
+  if (!appId) return { achieved: 0, total: 0 };
+  try {
+    const res = await fetch(
+      `https://steamcommunity.com/profiles/${userId}/stats/${appId}?xml=1`,
+      { headers: { 'user-agent': 'Mozilla/5.0 (compatible; mybio-site/1.0)' } }
+    );
+    if (!res.ok) return { achieved: 0, total: 0 };
+    const text = await res.text();
+    if (!text || text.length < 40) return { achieved: 0, total: 0 };
+    const num = (tag) =>
+      Number(text.match(new RegExp(`<${tag}>(.*?)</${tag}>`))?.[1]) || 0;
+    const total = num('globalAchievementCount');
+    const achieved = num('achievementCount');
+    return { achieved, total };
+  } catch {
+    return { achieved: 0, total: 0 };
+  }
+}
+
 // akamai-хост Steam периодически недоступен — всегда используем fastly
 const normalize = (url) => url.replace('avatars.akamai.steamstatic.com', 'avatars.fastly.steamstatic.com');
 
 const avatarFull = normalize(read('avatarFull'));
 const hash = (avatarFull.match(/([a-f0-9]{40})(?:_full)?\.jpg/) || [])[1] || '';
+
+const games = readGames();
+for (const game of games) {
+  game.achievements = await fetchAchievements(STEAM_ID, game.appId);
+}
 
 const profile = {
   id64: read('steamID64') || STEAM_ID,
@@ -59,9 +105,7 @@ const profile = {
   avatarMedium: normalize(read('avatarMedium')),
   avatarFull,
   groupName: '',
-  games: readAll('gameName')
-    .filter((g) => g && g.length < 40)
-    .slice(0, 6),
+  games,
   updatedAt: new Date().toISOString(),
 };
 
