@@ -15,10 +15,11 @@
     {
       "name": "Counter-Strike 2",
       "appId": "730",
-      "icon": "https://shared.akamai.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg",
-      "logo": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/942c04efaa5bc87afb6f2a97dbf17ac614c8a84d/capsule_184x69.jpg?t=1793054556",
+      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg",
+      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/942c04efaa5bc87afb6f2a97dbf17ac614c8a84d/capsule_184x69.jpg?t=1793054556",
       "hours2wk": 22.9,
       "hoursTotal": 565,
+      "cover": "https://media.steampowered.com/steam/apps/730/library_600x900.jpg",
       "achievements": {
         "achieved": 0,
         "total": 0
@@ -27,10 +28,11 @@
     {
       "name": "ROB RUN",
       "appId": "4262460",
-      "icon": "https://shared.akamai.steamstatic.com/community_assets/images/apps/4262460/6925066dc70cf9453455a8c1db9539521a116f63.jpg",
-      "logo": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4262460/0cef00dbfabf5f15adbf8b18e84cc8ef53dce963/capsule_184x69.jpg?t=1793811654",
+      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/4262460/6925066dc70cf9453455a8c1db9539521a116f63.jpg",
+      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4262460/0cef00dbfabf5f15adbf8b18e84cc8ef53dce963/capsule_184x69.jpg?t=1793811654",
       "hours2wk": 10.5,
       "hoursTotal": 10.5,
+      "cover": "https://shared.fastly.steamstatic.com/community_assets/images/apps/4262460/6925066dc70cf9453455a8c1db9539521a116f63.jpg",
       "achievements": {
         "achieved": 0,
         "total": 0
@@ -39,10 +41,11 @@
     {
       "name": "GeoGuessr Steam Edition",
       "appId": "3478870",
-      "icon": "https://shared.akamai.steamstatic.com/community_assets/images/apps/3478870/b00bdaf4b696b337e8cd38cb7f0db07c044f6f90.jpg",
-      "logo": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3478870/d26a05bdaf448c04c8b0e2cd0ba080ef6a0b87a4/capsule_184x69.jpg?t=1793113347",
+      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/3478870/b00bdaf4b696b337e8cd38cb7f0db07c044f6f90.jpg",
+      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3478870/d26a05bdaf448c04c8b0e2cd0ba080ef6a0b87a4/capsule_184x69.jpg?t=1793113347",
       "hours2wk": 2.8,
       "hoursTotal": 97,
+      "cover": "https://media.steampowered.com/steam/apps/3478870/library_hero.jpg",
       "achievements": {
         "achieved": 0,
         "total": 0
@@ -51,10 +54,11 @@
     {
       "name": "Euro Truck Simulator 2",
       "appId": "227300",
-      "icon": "https://shared.akamai.steamstatic.com/community_assets/images/apps/227300/adc18a4fc9adc0330144b76d61cbda68bb2394a0.jpg",
-      "logo": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/227300/da84d11d3ddd817e0cca299608b469a854d75ba5/capsule_184x69.jpg?t=1794502925",
+      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/227300/adc18a4fc9adc0330144b76d61cbda68bb2394a0.jpg",
+      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/227300/da84d11d3ddd817e0cca299608b469a854d75ba5/capsule_184x69.jpg?t=1794502925",
       "hours2wk": 2.2,
       "hoursTotal": 32,
+      "cover": "https://media.steampowered.com/steam/apps/227300/library_600x900.jpg",
       "achievements": {
         "achieved": 0,
         "total": 0
@@ -63,10 +67,11 @@
     {
       "name": "DDNet",
       "appId": "412220",
-      "icon": "https://shared.akamai.steamstatic.com/community_assets/images/apps/412220/fd98ee937665b65eeb4309d04709abad88c7dfa6.jpg",
-      "logo": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/412220/capsule_184x69.jpg?t=1757418450",
+      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/412220/fd98ee937665b65eeb4309d04709abad88c7dfa6.jpg",
+      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/412220/capsule_184x69.jpg?t=1757418450",
       "hours2wk": 1.1,
       "hoursTotal": 96,
+      "cover": "https://media.steampowered.com/steam/apps/412220/library_600x900.jpg",
       "achievements": {
         "achieved": 0,
         "total": 0
@@ -75,15 +80,16 @@
     {
       "name": "The Walking Dead: The Telltale Definitive Series",
       "appId": "1449690",
-      "icon": "https://shared.akamai.steamstatic.com/community_assets/images/apps/1449690/bd1fd090e72bc6584f1b271341a1be6d7fe6881e.jpg",
-      "logo": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1449690/capsule_184x69.jpg?t=1760651835",
+      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/1449690/bd1fd090e72bc6584f1b271341a1be6d7fe6881e.jpg",
+      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1449690/capsule_184x69.jpg?t=1760651835",
       "hours2wk": 0.6,
       "hoursTotal": 0.6,
+      "cover": "https://media.steampowered.com/steam/apps/1449690/library_600x900.jpg",
       "achievements": {
         "achieved": 0,
         "total": 0
       }
     }
   ],
-  "updatedAt": "2026-11-15T14:05:26.504Z"
+  "updatedAt": "2026-11-15T14:12:43.130Z"
 }

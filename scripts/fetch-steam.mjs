@@ -51,13 +51,39 @@ function readGames() {
     games.push({
       name: pick('gameName'),
       appId: (link.match(/app\/(\d+)/) || [])[1] || '',
-      icon: pick('gameIcon'),
-      logo: pick('gameLogo'),
+      icon: normalize(pick('gameIcon')),
+      logo: normalize(pick('gameLogo')),
       hours2wk: Number(pick('hoursPlayed')) || 0,
       hoursTotal: Number(pick('hoursOnRecord')) || 0,
     });
   }
   return games.slice(0, 6);
+}
+
+/**
+ * Самостоятельно ищем лучшую обложку игры:
+ * сначала вертикальная (600×900, как обложки в библиотеке Steam),
+ * потом горизонтальная, потом логотип, и в конце — иконка из профиля.
+ */
+async function pickCover(appId, fallback) {
+  if (!appId) return fallback;
+  const candidates = [
+    `https://media.steampowered.com/steam/apps/${appId}/library_600x900.jpg`,
+    `https://media.steampowered.com/steam/apps/${appId}/library_600x900_2x.jpg`,
+    `https://media.steampowered.com/steam/apps/${appId}/library_hero.jpg`,
+    `https://media.steampowered.com/steam/apps/${appId}/header.jpg`,
+    `https://media.steampowered.com/steam/apps/${appId}/capsule_184x69.jpg`,
+  ];
+
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { method: 'HEAD', headers: { 'user-agent': 'Mozilla/5.0' } });
+      if (res.ok) return url;
+    } catch {
+      /* пробуем следующий вариант */
+    }
+  }
+  return fallback;
 }
 
 /** Сколько ачивок выполнено (видно, только если статистика игры открыта) */
@@ -82,13 +108,17 @@ async function fetchAchievements(userId, appId) {
 }
 
 // akamai-хост Steam периодически недоступен — всегда используем fastly
-const normalize = (url) => url.replace('avatars.akamai.steamstatic.com', 'avatars.fastly.steamstatic.com');
+const normalize = (url) =>
+  url
+    .replace('shared.akamai.steamstatic.com', 'shared.fastly.steamstatic.com')
+    .replace('avatars.akamai.steamstatic.com', 'avatars.fastly.steamstatic.com');
 
 const avatarFull = normalize(read('avatarFull'));
 const hash = (avatarFull.match(/([a-f0-9]{40})(?:_full)?\.jpg/) || [])[1] || '';
 
 const games = readGames();
 for (const game of games) {
+  game.cover = await pickCover(game.appId, game.icon || game.logo);
   game.achievements = await fetchAchievements(STEAM_ID, game.appId);
 }
 

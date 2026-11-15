@@ -77,8 +77,8 @@ export default function SteamSection({ steam, steamChecking }) {
               {steam?.games?.slice(0, 6).map((game) => (
                 <div className="game-tile" key={game.name}>
                   <div className="game-tile-cover">
-                    {game.icon || game.logo ? (
-                      <img src={game.icon || game.logo} alt={game.name} loading="lazy" />
+                    {game.cover || game.icon || game.logo ? (
+                      <img src={game.cover || game.icon || game.logo} alt={game.name} loading="lazy" />
                     ) : (
                       <span className="game-tile-fallback" aria-hidden="true" />
                     )}

@@ -763,6 +763,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* полупрозрачность, как у аватарки в этой же вкладке */
+  opacity: 0.82;
+  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
+}
+.game-tile:hover .game-tile-cover img {
+  opacity: 1;
 }
 .game-tile-fallback {
   position: absolute;
