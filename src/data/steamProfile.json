@@ -30,7 +30,7 @@
       "appId": "730",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/942c04efaa5bc87afb6f2a97dbf17ac614c8a84d/capsule_184x69.jpg?t=1793054556",
-      "hours2wk": 8.8,
+      "hours2wk": 7.2,
       "hoursTotal": 565,
       "cover": "https://media.steampowered.com/steam/apps/730/library_600x900.jpg",
       "achievements": {
@@ -91,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-11-18T07:41:51.713Z"
+  "updatedAt": "2026-11-18T20:41:00.762Z"
 }
