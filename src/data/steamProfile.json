@@ -5,8 +5,8 @@
   "realname": ".hilkach.",
   "location": "Singapore",
   "memberSince": "June 26, 2025",
-  "onlineState": "offline",
-  "stateMessage": "Offline",
+  "onlineState": "online",
+  "stateMessage": "Online",
   "avatarIcon": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765.jpg",
   "avatarMedium": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_medium.jpg",
   "avatarFull": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_full.jpg",
@@ -26,29 +26,29 @@
       }
     },
     {
-      "name": "Counter-Strike 2",
-      "appId": "730",
-      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg",
-      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/942c04efaa5bc87afb6f2a97dbf17ac614c8a84d/capsule_184x69.jpg?t=1793054556",
-      "hours2wk": 7.9,
-      "hoursTotal": 566,
-      "cover": "https://media.steampowered.com/steam/apps/730/library_600x900.jpg",
-      "achievements": {
-        "achieved": 0,
-        "total": 0
-      }
-    },
-    {
       "name": "Euro Truck Simulator 2",
       "appId": "227300",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/227300/adc18a4fc9adc0330144b76d61cbda68bb2394a0.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/227300/da84d11d3ddd817e0cca299608b469a854d75ba5/capsule_184x69.jpg?t=1794502925",
-      "hours2wk": 7.7,
+      "hours2wk": 7.3,
       "hoursTotal": 37,
       "cover": "https://media.steampowered.com/steam/apps/227300/library_600x900.jpg",
       "achievements": {
         "achieved": 6,
         "total": 114
+      }
+    },
+    {
+      "name": "Counter-Strike 2",
+      "appId": "730",
+      "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg",
+      "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/942c04efaa5bc87afb6f2a97dbf17ac614c8a84d/capsule_184x69.jpg?t=1793054556",
+      "hours2wk": 7.3,
+      "hoursTotal": 566,
+      "cover": "https://media.steampowered.com/steam/apps/730/library_600x900.jpg",
+      "achievements": {
+        "achieved": 0,
+        "total": 0
       }
     },
     {
@@ -82,7 +82,7 @@
       "appId": "412220",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/412220/fd98ee937665b65eeb4309d04709abad88c7dfa6.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/412220/capsule_184x69.jpg?t=1757418450",
-      "hours2wk": 0.6,
+      "hours2wk": 0.4,
       "hoursTotal": 96,
       "cover": "https://media.steampowered.com/steam/apps/412220/library_600x900.jpg",
       "achievements": {
@@ -91,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-11-19T20:47:53.133Z"
+  "updatedAt": "2026-11-20T07:28:58.865Z"
 }
