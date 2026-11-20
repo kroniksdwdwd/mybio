@@ -5,8 +5,8 @@
   "realname": ".hilkach.",
   "location": "Singapore",
   "memberSince": "June 26, 2025",
-  "onlineState": "online",
-  "stateMessage": "Online",
+  "onlineState": "offline",
+  "stateMessage": "Offline",
   "avatarIcon": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765.jpg",
   "avatarMedium": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_medium.jpg",
   "avatarFull": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_full.jpg",
@@ -30,8 +30,8 @@
       "appId": "227300",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/227300/adc18a4fc9adc0330144b76d61cbda68bb2394a0.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/227300/da84d11d3ddd817e0cca299608b469a854d75ba5/capsule_184x69.jpg?t=1794502925",
-      "hours2wk": 7.3,
-      "hoursTotal": 37,
+      "hours2wk": 7.6,
+      "hoursTotal": 38,
       "cover": "https://media.steampowered.com/steam/apps/227300/library_600x900.jpg",
       "achievements": {
         "achieved": 6,
@@ -43,7 +43,7 @@
       "appId": "730",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/730/942c04efaa5bc87afb6f2a97dbf17ac614c8a84d/capsule_184x69.jpg?t=1793054556",
-      "hours2wk": 7.3,
+      "hours2wk": 7,
       "hoursTotal": 566,
       "cover": "https://media.steampowered.com/steam/apps/730/library_600x900.jpg",
       "achievements": {
@@ -56,7 +56,7 @@
       "appId": "3478870",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/3478870/b00bdaf4b696b337e8cd38cb7f0db07c044f6f90.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3478870/d26a05bdaf448c04c8b0e2cd0ba080ef6a0b87a4/capsule_184x69.jpg?t=1793113347",
-      "hours2wk": 2.1,
+      "hours2wk": 1,
       "hoursTotal": 97,
       "cover": "https://media.steampowered.com/steam/apps/3478870/library_hero.jpg",
       "achievements": {
@@ -91,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-11-20T07:28:58.865Z"
+  "updatedAt": "2026-11-20T20:31:03.525Z"
 }
