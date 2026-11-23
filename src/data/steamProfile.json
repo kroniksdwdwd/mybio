@@ -5,8 +5,8 @@
   "realname": ".hilkach.",
   "location": "Singapore",
   "memberSince": "June 26, 2025",
-  "onlineState": "offline",
-  "stateMessage": "Offline",
+  "onlineState": "online",
+  "stateMessage": "Online",
   "avatarIcon": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765.jpg",
   "avatarMedium": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_medium.jpg",
   "avatarFull": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_full.jpg",
@@ -91,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-11-22T19:49:47.077Z"
+  "updatedAt": "2026-11-23T07:52:12.352Z"
 }
