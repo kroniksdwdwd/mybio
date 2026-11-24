@@ -17,8 +17,8 @@
       "appId": "227300",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/227300/adc18a4fc9adc0330144b76d61cbda68bb2394a0.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/227300/da84d11d3ddd817e0cca299608b469a854d75ba5/capsule_184x69.jpg?t=1794502925",
-      "hours2wk": 15.7,
-      "hoursTotal": 46,
+      "hours2wk": 16.9,
+      "hoursTotal": 47,
       "cover": "https://media.steampowered.com/steam/apps/227300/library_600x900.jpg",
       "achievements": {
         "achieved": 7,
@@ -91,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-11-23T07:52:12.352Z"
+  "updatedAt": "2026-11-24T00:02:18.655Z"
 }
