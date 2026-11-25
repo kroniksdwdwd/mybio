@@ -17,8 +17,8 @@
       "appId": "227300",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/227300/adc18a4fc9adc0330144b76d61cbda68bb2394a0.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/227300/da84d11d3ddd817e0cca299608b469a854d75ba5/capsule_184x69.jpg?t=1794502925",
-      "hours2wk": 16.7,
-      "hoursTotal": 47,
+      "hours2wk": 17.9,
+      "hoursTotal": 48,
       "cover": "https://media.steampowered.com/steam/apps/227300/library_600x900.jpg",
       "achievements": {
         "achieved": 7,
@@ -30,7 +30,7 @@
       "appId": "4262460",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/4262460/6925066dc70cf9453455a8c1db9539521a116f63.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4262460/0cef00dbfabf5f15adbf8b18e84cc8ef53dce963/capsule_184x69.jpg?t=1795595062",
-      "hours2wk": 10.5,
+      "hours2wk": 9.5,
       "hoursTotal": 10.5,
       "cover": "https://shared.fastly.steamstatic.com/community_assets/images/apps/4262460/6925066dc70cf9453455a8c1db9539521a116f63.jpg",
       "achievements": {
@@ -91,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-11-25T08:50:07.392Z"
+  "updatedAt": "2026-11-25T21:49:53.314Z"
 }
