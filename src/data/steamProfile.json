@@ -5,8 +5,8 @@
   "realname": ".hilkach.",
   "location": "Singapore",
   "memberSince": "June 26, 2025",
-  "onlineState": "offline",
-  "stateMessage": "Offline",
+  "onlineState": "online",
+  "stateMessage": "Online",
   "avatarIcon": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765.jpg",
   "avatarMedium": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_medium.jpg",
   "avatarFull": "https://avatars.fastly.steamstatic.com/1e2eed4131c3f391e30bba0c78559a0617acc765_full.jpg",
@@ -30,7 +30,7 @@
       "appId": "4262460",
       "icon": "https://shared.fastly.steamstatic.com/community_assets/images/apps/4262460/6925066dc70cf9453455a8c1db9539521a116f63.jpg",
       "logo": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/4262460/0cef00dbfabf5f15adbf8b18e84cc8ef53dce963/capsule_184x69.jpg?t=1795595062",
-      "hours2wk": 7.8,
+      "hours2wk": 5.2,
       "hoursTotal": 10.5,
       "cover": "https://shared.fastly.steamstatic.com/community_assets/images/apps/4262460/6925066dc70cf9453455a8c1db9539521a116f63.jpg",
       "achievements": {
@@ -91,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-11-26T21:42:30.226Z"
+  "updatedAt": "2026-11-27T08:47:44.730Z"
 }
